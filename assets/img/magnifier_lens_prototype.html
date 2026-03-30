@@ -1,0 +1,115 @@
+
+<div style="padding: 1rem 0;">
+  <div style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">
+    Muovi il cursore sull'immagine per attivare la lente · Rotella per cambiare zoom
+  </div>
+
+  <div id="img-container" style="position: relative; display: inline-block; width: 100%; cursor: none; overflow: hidden; border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary);">
+    <img id="main-img"
+      src="https://tuffrat.art/assets/img/opere/serie-01/full/2023_piccionaiax_01.webp"
+      style="display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none;"
+      draggable="false"
+      alt="Opera di test">
+
+    <div id="lens" style="
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.7);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.4);
+      pointer-events: none;
+      display: none;
+      overflow: hidden;
+      transform: translate(-50%, -50%);
+    ">
+      <img id="lens-img"
+        src="https://tuffrat.art/assets/img/opere/serie-01/full/2023_piccionaiax_01.webp"
+        style="position: absolute; pointer-events: none; user-select: none;"
+        draggable="false"
+        alt="">
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 12px; margin-top: 16px;">
+    <label style="font-size: 13px; color: var(--color-text-secondary); white-space: nowrap;">Zoom lente</label>
+    <input type="range" id="zoom-slider" min="2" max="6" step="0.5" value="3" style="flex: 1;">
+    <span id="zoom-label" style="font-size: 13px; font-weight: 500; min-width: 28px;">3×</span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
+    <label style="font-size: 13px; color: var(--color-text-secondary); white-space: nowrap;">Dimensione lente</label>
+    <input type="range" id="size-slider" min="100" max="280" step="10" value="180" style="flex: 1;">
+    <span id="size-label" style="font-size: 13px; font-weight: 500; min-width: 36px;">180px</span>
+  </div>
+</div>
+
+<script>
+(function() {
+  const container = document.getElementById('img-container');
+  const mainImg   = document.getElementById('main-img');
+  const lens      = document.getElementById('lens');
+  const lensImg   = document.getElementById('lens-img');
+  const zoomSlider = document.getElementById('zoom-slider');
+  const sizeSlider = document.getElementById('size-slider');
+  const zoomLabel  = document.getElementById('zoom-label');
+  const sizeLabel  = document.getElementById('size-label');
+
+  let zoomFactor = 3;
+  let lensSize   = 180;
+
+  function updateLens(e) {
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const relX = x / rect.width;
+    const relY = y / rect.height;
+
+    lens.style.left = x + 'px';
+    lens.style.top  = y + 'px';
+
+    const imgNatW = mainImg.naturalWidth  || rect.width;
+    const imgNatH = mainImg.naturalHeight || rect.height;
+
+    const scaledW = imgNatW * zoomFactor;
+    const scaledH = imgNatH * zoomFactor;
+
+    const offsetX = relX * scaledW - lensSize / 2;
+    const offsetY = relY * scaledH - lensSize / 2;
+
+    lensImg.style.width  = scaledW + 'px';
+    lensImg.style.height = scaledH + 'px';
+    lensImg.style.left   = -offsetX + 'px';
+    lensImg.style.top    = -offsetY + 'px';
+  }
+
+  function setLensSize(size) {
+    lensSize = size;
+    lens.style.width  = size + 'px';
+    lens.style.height = size + 'px';
+  }
+
+  container.addEventListener('mouseenter', () => { lens.style.display = 'block'; });
+  container.addEventListener('mouseleave', () => { lens.style.display = 'none'; });
+  container.addEventListener('mousemove', updateLens);
+
+  container.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    zoomFactor = Math.min(6, Math.max(2, zoomFactor + (e.deltaY < 0 ? 0.5 : -0.5)));
+    zoomSlider.value = zoomFactor;
+    zoomLabel.textContent = zoomFactor + '×';
+  }, { passive: false });
+
+  zoomSlider.addEventListener('input', () => {
+    zoomFactor = parseFloat(zoomSlider.value);
+    zoomLabel.textContent = zoomFactor + '×';
+  });
+
+  sizeSlider.addEventListener('input', () => {
+    const s = parseInt(sizeSlider.value);
+    sizeLabel.textContent = s + 'px';
+    setLensSize(s);
+  });
+})();
+</script>
