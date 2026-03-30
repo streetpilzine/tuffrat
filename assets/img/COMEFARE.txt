@@ -1,0 +1,44 @@
+3) Drive: organizzazione pratica “a prova di caos”
+Anche se il Form crea una cartella automatica per gli upload, tu puoi avere un archivio ordinato “da sito”.
+
+Concettualmente (non serve che lo chiami uguale, basta l’idea):
+
+INBOX_form_uploads/ (automatico / grezzo)
+ARCHIVIO_master/ (solo materiale buono)
+	opere/serie-01/full + thumb
+	opere/serie-02/full + thumb
+	fotografia/full + thumb
+	edizioni/full + thumb
+Workflow: tu scarichi da INBOX, rinomini e ricomprimi, poi metti in ARCHIVIO_master e infine copi nel progetto del sito.
+
+___
+4) Come “matchare” dati e immagini senza farlo rinominare (tu fai tutto)
+Per renderti la vita facile in futuro, aggiungi al Form una domanda che lui può compilare senza sforzo ma che ti aiuta tantissimo:
+
+“Nome breve per riconoscere l’opera (1–2 parole)” (facoltativa)
+Esempio: RonfRonf / Piccionaiax
+Non è obbligatoria, ma quando c’è ti fa risparmiare tempo.
+
+In ogni caso, tu puoi usare:
+
+timestamp della risposta + titolo + anno per rinominare in modo coerente.
+
+___
+5) Convenzione file che applichi TU (semplice e professionale)
+Quando importi nel sito, ti consiglierei uno schema unico, tipo:
+
+serie-01/
+full/2023_ronfronf_01.webp
+thumb/2023_ronfronf_01.webp
+Così in futuro:
+
+la griglia usa sempre thumb
+la lightbox usa sempre full
+6) Processo operativo “sempre uguale” (1 volta a settimana o quando vuoi)
+Apri il Sheet delle risposte → controlli che i campi ci siano
+Scarichi foto intera + dettaglio
+Scegli:
+serie corretta (se “da decidere”, la assegni tu)
+stato (online/venduto/richiesta) e link (se online)
+Prepari thumb/full e rinomini
+Inserisci nel sito

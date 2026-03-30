@@ -1,0 +1,3 @@
+ritratto.webp
+profilo.webp
+tag.svg               # (opzionale) la “firma/tag” come elemento grafico

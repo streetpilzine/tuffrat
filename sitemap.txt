@@ -1,0 +1,48 @@
+tuffrat-site/
+  index.html                  # Home: bio + opere curate + hub
+  about/
+    index.html                # Bio estesa / statement / contatti 
+  serie/
+    index.html                # Indice serie (le 5 serie)
+    serie-01/
+      index.html              # Pagina dettaglio serie 01
+    serie-02/
+      index.html
+    serie-03/
+      index.html
+    serie-04/
+      index.html
+    serie-05/
+      index.html
+  fotografia/
+    index.html                # Selezione fotografica (curata)
+  edizioni/
+    index.html                # Fanzine / collaborazioni / stampe
+  assets/
+    css/
+      style.css
+    img/
+      artist/
+        ritratto.webp
+        profilo.webp
+        tag.svg               # (opzionale) la “firma/tag” come elemento grafico
+      opere/
+        serie-01/
+          thumb/
+            2023_ronfronf_01.webp
+            2023_piccionaiax_01.webp
+          full/
+            2023_ronfronf_01.webp
+            2023_piccionaiax_01.webp
+        serie-02/
+          thumb/
+          full/
+        fotografia/
+          thumb/
+          full/
+        edizioni/
+          thumb/
+          full/
+    docs/
+      press-kit.pdf           # (opzionale)
+  README.txt                  # note interne: convenzioni nomi file, workflow update
