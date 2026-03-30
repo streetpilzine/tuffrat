@@ -39,7 +39,6 @@ main {
   gap: 2rem;
   align-items: center;
 }
-
 .hero__text h1 {
   font-size: clamp(2.2rem, 4vw, 3rem);
   margin: 0.4rem 0 0.6rem;
@@ -52,7 +51,6 @@ main {
   min-height: 280px;
   box-shadow: var(--shadow);
 }
-
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -60,10 +58,9 @@ main {
   color: var(--muted);
   margin: 0;
 }
-
 .hero__actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
 
-/* ── Buttons & links ── */
+/* ── Buttons ── */
 .button, .link {
   display: inline-flex;
   align-items: center;
@@ -102,7 +99,7 @@ main {
 /* ── Gallery ── */
 .gallery { margin-top: 3rem; }
 .section-header h2 { margin: 0 0 0.2rem; }
-.section-header p { margin: 0 0 1.5rem; color: var(--muted); }
+.section-header p  { margin: 0 0 1.5rem; color: var(--muted); }
 
 .grid {
   display: grid;
@@ -117,17 +114,15 @@ main {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow);
-  /* BUG FIX: cursor mancante — ora applicato direttamente su .card */
   cursor: default;
 }
-/* Cursore pointer solo sulle card cliccabili */
 .card.lightbox-trigger {
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .card.lightbox-trigger:hover {
-  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
   transform: translateY(-2px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
 }
 .card img { aspect-ratio: 4 / 3; object-fit: cover; }
 .card figcaption {
@@ -137,7 +132,6 @@ main {
 }
 
 /* ── Hub ── */
-/* BUG FIX: margin-top esplicito per separare correttamente da .gallery */
 .hub {
   margin-top: 3rem;
   display: grid;
@@ -152,7 +146,7 @@ main {
   box-shadow: var(--shadow);
 }
 .hub-card h3 { margin: 0 0 0.5rem; }
-.hub-card p { margin: 0 0 0.8rem; color: var(--muted); }
+.hub-card p  { margin: 0 0 0.8rem; color: var(--muted); }
 
 /* ── Contact ── */
 .contact {
@@ -171,8 +165,8 @@ main {
   text-align: left;
 }
 .contact__box h2 { margin: 0 0 0.4rem; }
-.contact__box p { margin: 0 0 1rem; color: var(--muted); }
-.contact__links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.contact__box p  { margin: 0 0 1rem; color: var(--muted); }
+.contact__links  { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
 /* ── Footer ── */
 .footer {
@@ -205,8 +199,6 @@ p a:hover { color: #555; }
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.72);
-  /* BUG FIX: backdrop riceve i click ma non li assorbe via pointer-events
-     — la gestione è delegata al JS, qui solo stile */
 }
 
 .lightbox__content {
@@ -215,7 +207,6 @@ p a:hover { color: #555; }
   color: #f7f7f5;
   max-width: 960px;
   width: calc(100% - 2rem);
-  /* BUG FIX: max-height + overflow per schermi bassi */
   max-height: calc(100vh - 2rem);
   border-radius: 12px;
   overflow: hidden;
@@ -223,7 +214,7 @@ p a:hover { color: #555; }
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr auto;
-  z-index: 1; /* sopra il backdrop */
+  z-index: 1;
 }
 
 .lightbox__img-wrap {
@@ -231,7 +222,6 @@ p a:hover { color: #555; }
   display: flex;
   align-items: center;
   justify-content: center;
-  /* BUG FIX: altezza minima garantita */
   min-height: 320px;
   overflow: hidden;
 }
@@ -272,8 +262,7 @@ p a:hover { color: #555; }
 }
 .lightbox__close {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 10px; right: 10px;
   border: none;
   font-size: 1.5rem;
   line-height: 1;
