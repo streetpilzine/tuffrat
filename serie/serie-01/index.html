@@ -1,48 +1,59 @@
-html
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Serie 01 — TuffRat</title>
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
-  <main style="max-width: 1200px; margin: 0 auto; padding: 2rem 1.25rem 3rem;">
-    <h1>Serie 01</h1>
-    <p style="color:#555; max-width:60ch;">
-      Intro breve (80–120 parole): contesto, medium prevalente, periodo, cosa indaga la serie.
-    </p>
+  <header style="max-width:1200px; margin:0 auto; padding:2rem 1.25rem 0;">
+    <a href="../" style="font-size:0.85rem; color:#555; text-decoration:none;">← Serie</a>
+  </header>
+
+  <main>
+    <div class="section-header" style="margin-top:1.5rem;">
+      <h2>Serie 01</h2>
+      <p style="max-width:60ch;">
+        Intro breve (80–120 parole): contesto, medium prevalente, periodo, cosa indaga la serie.
+      </p>
+    </div>
 
     <section class="gallery" aria-label="Opere serie 01">
       <div class="grid">
+
         <figure class="card lightbox-trigger"
-          data-title="Serie 01 — Opera 1"
-          data-year="2024"
-          data-tech="Tecniche miste su tela"
-          data-size="60 x 60 cm"
-          data-status="Su richiesta"
-          data-link="">
-          <img src="https://images.unsplash.com/photo-1496317899792-9d7dbcd928a1?auto=format&fit=crop&w=900&q=80" alt="Opera 1">
-          <figcaption>Serie 01 — Opera 1 · 2024</figcaption>
-        </figure>
-        <figure class="card lightbox-trigger"
-          data-title="Serie 01 — Opera 2"
-          data-year="2024"
+          data-title="Piccionaiax"
+          data-year="2023"
           data-tech="Acrilico su tela"
-          data-size="70 x 100 cm"
-          data-status="Disponibile online"
-          data-link="https://example.com/acquista">
-          <img src="https://images.unsplash.com/photo-1473181488821-2d23949a045a?auto=format&fit=crop&w=900&q=80" alt="Opera 2">
-          <figcaption>Serie 01 — Opera 2 · 2024</figcaption>
+          data-size="30 × 40 cm"
+          data-status="Su richiesta"
+          data-src="../../assets/img/opere/serie-01/full/2023_piccionaiax_01.webp">
+          <img src="../../assets/img/opere/serie-01/thumb/2023_piccionaiax_01.webp" alt="Piccionaiax 2023">
+          <figcaption>Piccionaiax · 2023 · 30×40 · Acrilico su tela</figcaption>
         </figure>
-        <!-- Aggiungi le altre opere (~10) -->
+
+        <figure class="card lightbox-trigger"
+          data-title="RonfRonf"
+          data-year="2023"
+          data-tech="Collage"
+          data-size="60 × 60 cm"
+          data-status="Su richiesta"
+          data-src="../../assets/img/opere/serie-01/full/2023_ronfronf_01.webp">
+          <img src="../../assets/img/opere/serie-01/thumb/2023_ronfronf_01.webp" alt="RonfRonf 2023">
+          <figcaption>RonfRonf · 2023 · 60×60 · Collage</figcaption>
+        </figure>
+
       </div>
     </section>
   </main>
 
-  <!-- Lightbox (riuso lo stesso markup della home) -->
-  <div class="lightbox" id="lightbox">
+  <footer class="footer">
+    <p>© 2026 TuffRat — Portfolio</p>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visualizzatore opera">
     <div class="lightbox__backdrop" id="lightbox-backdrop"></div>
     <div class="lightbox__content">
       <button class="lightbox__close" id="lightbox-close" aria-label="Chiudi">×</button>
@@ -50,20 +61,20 @@ html
         <img id="lightbox-img" src="" alt="">
       </div>
       <div class="lightbox__meta">
-        <h3 id="lb-title">Titolo</h3>
-        <p id="lb-year">Anno</p>
-        <p id="lb-tech">Tecnica</p>
-        <p id="lb-size">Dimensioni</p>
-        <p id="lb-status">Status</p>
+        <h3 id="lb-title"></h3>
+        <p id="lb-year"></p>
+        <p id="lb-tech"></p>
+        <p id="lb-size"></p>
+        <p id="lb-status"></p>
         <p id="lb-link"></p>
       </div>
       <div class="lightbox__nav">
-        <button id="lb-prev" aria-label="Precedente">←</button>
-        <button id="lb-next" aria-label="Successivo">→</button>
+        <button id="lb-prev" aria-label="Precedente">← Prec</button>
+        <button id="lb-next" aria-label="Successivo">Succ →</button>
       </div>
     </div>
   </div>
 
-  <script src="../assets/js/script.js"></script>
+  <script src="../../script.js"></script>
 </body>
 </html>
