@@ -289,3 +289,124 @@ p a:hover { color: #555; }
   .hero { padding-top: 2.5rem; }
   .hero__actions { flex-wrap: wrap; }
 }
+
+/* ── Mostre ── */
+.mostre {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.mostra {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+}
+.mostra h3 { margin: 0 0 0.25rem; font-size: 1.15rem; }
+.mostra__meta { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+/* ── Edizioni: nota ── */
+.edizioni__note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: 1.5rem;
+}
+
+/* ── Edizioni: flipbook (StPageFlip) ── */
+.flipbook-trigger { cursor: pointer; }
+.flipbook-trigger img { transition: transform .25s ease; }
+.flipbook-trigger:hover img { transform: scale(1.02); }
+
+.flipbook-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.flipbook-overlay.is-open { display: flex; }
+
+.flipbook__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.82);
+  backdrop-filter: blur(2px);
+}
+
+.flipbook__content {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, 96vw);
+  height: min(88vh, 1600px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.flipbook__close {
+  position: absolute;
+  top: -2.5rem;
+  right: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.flipbook__close:hover { background: rgba(255,255,255,0.28); }
+
+.flipbook__title {
+  color: #fff;
+  font-size: 0.95rem;
+  text-align: center;
+  min-height: 1.2em;
+  opacity: 0.85;
+}
+
+.flipbook__book {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.flipbook__bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.flipbook__bar button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.flipbook__bar button:hover { background: rgba(255,255,255,0.28); }
+.flipbook__count {
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  min-width: 4rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .flipbook__close { top: -2.25rem; }
+  .flipbook__content { height: 80vh; }
+}

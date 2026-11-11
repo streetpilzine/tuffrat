@@ -14,31 +14,26 @@
   <main>
     <div class="section-header" style="margin-top:1.5rem;">
       <h2>Edizioni</h2>
-      <p style="max-width:60ch;">
-        [Placeholder intro — 60/100 parole.] Fanzine, stampe limitate, multipli e collaborazioni.
-        Tutti i pezzi sono numerati o in tiratura limitata.
-      </p>
+      <p style="max-width:60ch;">Fanzine, stampe limitate, multipli e collaborazioni. Clicca su una fanzine per sfogliarla.</p>
     </div>
 
-    <section class="gallery" aria-label="Edizioni e stampe">
+    <section class="gallery" aria-label="Edizioni e fanzine">
       <div class="grid">
+        <!--
+        Template card fanzina (sfogliabile). Dopo aver generato le pagine con:
+          python tools/fanzine_to_pages.py <file.pdf> --slug streetpil-1
+        duplica questa card per ogni fanzina, aggiornando data-title, data-folder, data-count e il src della copertina.
 
-        <figure class="card">
-          <img src="../assets/img/artist/ritratto.webp" alt="Placeholder edizione">
-          <figcaption>[Titolo] · [Anno] · [Tiratura] · [Tecnica]</figcaption>
+        <figure class="card flipbook-trigger"
+          data-title="StreetPIL n.1"
+          data-folder="../assets/img/edizioni/streetpil-1/pages"
+          data-count="12">
+          <img src="../assets/img/edizioni/streetpil-1/pages/01.webp" alt="StreetPIL n.1">
+          <figcaption>StreetPIL n.1 · 2024 · Fanzine</figcaption>
         </figure>
-
-        <figure class="card">
-          <img src="../assets/img/artist/ritratto.webp" alt="Placeholder edizione">
-          <figcaption>[Titolo] · [Anno] · [Tiratura] · [Tecnica]</figcaption>
-        </figure>
-
-        <figure class="card">
-          <img src="../assets/img/artist/ritratto.webp" alt="Placeholder edizione">
-          <figcaption>[Titolo] · [Anno] · [Tiratura] · [Tecnica]</figcaption>
-        </figure>
-
+        -->
       </div>
+      <p class="edizioni__note">Fanzine in digitalizzazione — in arrivo.</p>
     </section>
 
     <section class="contact" style="margin-top:3.5rem;">
@@ -53,8 +48,26 @@
     </section>
   </main>
 
+  <!-- Flipbook -->
+  <div class="flipbook-overlay" id="flipbook-overlay">
+    <div class="flipbook__backdrop" id="flipbook-backdrop"></div>
+    <div class="flipbook__content">
+      <button class="flipbook__close" id="flipbook-close" aria-label="Chiudi">×</button>
+      <div class="flipbook__title" id="flipbook-title"></div>
+      <div class="flipbook__book" id="flipbook"></div>
+      <div class="flipbook__bar">
+        <button id="flipbook-prev" aria-label="Precedente">←</button>
+        <span class="flipbook__count" id="flipbook-count"></span>
+        <button id="flipbook-next" aria-label="Successivo">→</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="footer">
     <p>© 2026 TuffRat — Portfolio</p>
   </footer>
+
+  <script src="../page-flip.browser.js"></script>
+  <script src="../flipbook.js"></script>
 </body>
 </html>
