@@ -1,0 +1,49 @@
+# Build e deploy del redesign. Produzione da main; branch deploy pubblici per redesign.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# ── Redirect dal sito statico precedente ──
+[[redirects]]
+  from = "/about/*"
+  to = "/bio"
+  status = 301
+
+[[redirects]]
+  from = "/serie/serie-01/*"
+  to = "/serie/2023-2025"
+  status = 301
+
+[[redirects]]
+  from = "/serie/serie-02/*"
+  to = "/serie/roundabout"
+  status = 301
+
+[[redirects]]
+  from = "/serie/serie-03/*"
+  to = "/serie/bustine-di-te"
+  status = 301
+
+[[redirects]]
+  from = "/serie/serie-04/*"
+  to = "/serie"
+  status = 301
+
+[[redirects]]
+  from = "/serie/serie-05/*"
+  to = "/serie"
+  status = 301
+
+# ── SPA fallback: le route prerenderizzate hanno già il proprio index.html ──
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
