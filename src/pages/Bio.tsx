@@ -7,7 +7,7 @@ export function Bio() {
   const { pulsos } = artista.video
   return (
     <>
-      <PageHeader titolo="About" sotto="Bio e statement" />
+      <PageHeader titolo="Bio" sotto="Bio e statement" />
       <section className="about" aria-labelledby="bio-titolo">
         <div className="about__image">
           <img src={artista.ritratto.src} alt={artista.ritratto.alt} width={artista.ritratto.width} height={artista.ritratto.height} />

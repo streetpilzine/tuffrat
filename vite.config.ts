@@ -13,8 +13,8 @@ export default defineConfig({
       output: {
         codeSplitting: {
           groups: [
-            { name: 'three', test: /node_modules[\/](three|@react-three)[\/]/ },
-            { name: 'gsap', test: /node_modules[\/](gsap|@gsap)[\/]/ },
+            { name: 'three', test: /node_modules[/\\](three|@react-three)[/\\]/ },
+            { name: 'gsap', test: /node_modules[/\\](gsap|@gsap)[/\\]/ },
           ],
         },
       },

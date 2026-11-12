@@ -5,8 +5,8 @@ import { OpereGrid } from '../ui/OpereGrid'
 
 const hub = [
   { to: '/serie', titolo: 'Serie', testo: 'Corpi di lavoro organizzati per serie.' },
-  { to: '/edizioni', titolo: 'Edizioni', testo: 'Fanzine, stampe e collaborazioni.' },
-  { to: '/fotografia', titolo: 'Fotografia', testo: 'Selezione fotografica.' },
+  { to: '/edizioni', titolo: 'Edizioni', testo: 'Fanzine, stampe, collaborazioni.' },
+  { to: '/fotografia', titolo: 'Fotografia', testo: 'Selezione analogica e ritratti.' },
   { to: '/mostre', titolo: 'Mostre', testo: 'Percorso espositivo recente.' },
 ]
 
