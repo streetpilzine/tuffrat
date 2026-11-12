@@ -9,8 +9,9 @@ import { Edizioni } from './pages/Edizioni'
 import { Mostre } from './pages/Mostre'
 import { Fotografia } from './pages/Fotografia'
 import { NotFound } from './pages/NotFound'
+import { DevScena } from './dev/DevScena'
 
-/** Route reali (ARCHITECTURE.md §5). In fase 0 ogni route è una pagina DOM; dalla fase 1 il Layout ospita Stage e SceneRouter. */
+/** Route reali (ARCHITECTURE.md §5). Ogni route è una pagina DOM (vista lista); in modo 3D il Layout monta anche Stage e SceneRouter. */
 export default function App() {
   return (
     <BrowserRouter>
@@ -23,6 +24,8 @@ export default function App() {
           <Route path="serie/serie-01" element={<Navigate to="/serie/2023-2025" replace />} />
           <Route path="serie/serie-02" element={<Navigate to="/serie/roundabout" replace />} />
           <Route path="serie/serie-03" element={<Navigate to="/serie/bustine-di-te" replace />} />
+          <Route path="serie/serie-04" element={<Navigate to="/serie" replace />} />
+          <Route path="serie/serie-05" element={<Navigate to="/serie" replace />} />
           <Route path="serie/:slug" element={<SerieDetail />} />
           <Route path="opere/:slug" element={<OperaDetail />} />
           <Route path="edizioni" element={<Edizioni />} />
@@ -30,6 +33,7 @@ export default function App() {
           <Route path="mostre" element={<Mostre />} />
           <Route path="mostre/:slug" element={<Mostre />} />
           <Route path="fotografia" element={<Fotografia />} />
+          {import.meta.env.DEV && <Route path="dev/scena" element={<DevScena />} />}
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

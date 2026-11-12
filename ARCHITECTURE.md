@@ -2,7 +2,7 @@
 titolo: ARCHITECTURE — redesign TuffRat
 progetto: tuffrat-site
 data: 2026-11-11
-stato: v0.1 (fase 0 in corso; si consolida a fine fase 0)
+stato: v0.2 (fase 1 in corso; §6 e §7 aggiornati il 12/11/2026)
 ---
 
 # ARCHITECTURE
@@ -122,21 +122,22 @@ Preferenza globale `vista=lista` (query param iniziale o interruttore nel Nav) p
 
 ## 6. Stato (zustand)
 
-- `useScene`: `{ scena: 'muro'|'banco'|'bio', target: CameraTarget, inTransizione: boolean, vaiA(route) }`.
+- `useScene`: `{ scena: 'muro'|'banco'|'bio', target: CameraTarget, inTransizione: boolean, vaiA(pathname) }`. La mappa route → scena/target è la funzione pura `scenaPerRoute` in `src/core/scene-map.ts` (testata); `vaiA` la applica allo store. La navigazione vera resta ai `Link` del router: `vaiA` non cambia l'URL, lo segue.
 - `useLayout`: `{ posizioni: Record<Slug, Pose>, sposta(id, pose), ripristina() }`, persistito in localStorage con versione schema.
 - `useCursor`: `{ kind: 'default'|'spray'|'marker'|'hand'|'grab', set(kind) }`.
-- `usePrefs`: `{ vistaLista: boolean, reducedMotion: boolean (da media query), webgl: boolean, toggleVistaLista() }`.
+- `usePrefs`: `{ vistaLista: boolean, reducedMotion: boolean (da media query), webgl: boolean, toggleVistaLista() }`. `modo3D(prefs)` = `!vistaLista && !reducedMotion && webgl`: è l'unica condizione che monta Stage e Cursor. `vistaLista` iniziale: `?vista=lista|3d` nell'URL, poi `localStorage` (`tuffrat.prefs.v1`), altrimenti 3D. `webgl` = contesto WebGL ottenibile e `deviceMemory` > 2 GB.
 - Stato Roundabout nell'URL (search params), non in store, per condivisibilità.
 
 ## 7. Contratti dei componenti
 
 ```ts
 // core
-<Stage>                          // Canvas R3F persistente; monta children delle scene; si smonta se !webgl || vistaLista
-<SceneRouter routes={RouteMap}>  // route → { scena, target }; esegue transizione camera (gsap, ≤800ms) poi monta la scena
+<Stage>                          // Canvas R3F persistente (frameloop="demand"), lazy: monta Muro, Banco e BioWall insieme (un solo mondo); si smonta se !modo3D
+<SceneRouter />                  // lato DOM: useLocation → useScene.vaiA(pathname). Il contesto del router non attraversa il root del Canvas
+<CameraRig />                    // dentro il Canvas: legge useScene.target e porta la camera col tween GSAP (≤800ms, ease TuffRat), invalidate a ogni tick
 <PhysicalObject id pose draggable? snap? onGrab? onRelease? onInspect? cursor?>  // ciclo riposo → afferra → in primo piano → ispeziona → rilascia; usato da Frame, Book
-<Cursor />                       // legge useCursor; nascosto su touch e in vistaLista
-<ListView collezione items renderItem />  // DOM semanticamente corretto (ul/li, h2/h3), tastiera
+<Cursor />                       // lazy, solo in modo3D e con (pointer: fine); forma da data-cursor="spray|marker|hand|grab" o dedotta (.card → hand, button → spray, a → marker)
+<ListView items label keyOf renderItem />  // ul/li con aria-label; usato da griglie opere, serie, edizioni, mostre in entrambe le viste
 
 // ui (DOM)
 <TagIntro svg onDone skippable oncePerSession />
@@ -153,6 +154,10 @@ Preferenza globale `vista=lista` (query param iniziale o interruttore nel Nav) p
 ```
 
 Contratto comune delle transizioni: ogni scena espone `enter(tl)` ed `exit(tl)` che appendono a una timeline GSAP passata dal `SceneRouter`; in reduced-motion le timeline vengono eseguite con `progress(1)`.
+
+Layout del DOM in modo 3D (deciso in fase 1, 12/11/2026): lo `Stage` è `position: fixed` a tutto schermo sotto tutto; la Nav è una barra flottante traslucida; il contenuto della route sta in un `.sheet` traslucido con `margin-top: 56vh` che scorre sopra la scena. Così ogni route conserva il suo DOM completo (vista lista = stesso markup senza Stage) e la fascia alta dello schermo mostra sempre il muro o il banco. In fase 2 le opere della home escono dal `.sheet` e vivono solo come `Frame` sul muro; i testi restano nel `.sheet`.
+
+Unità del mondo 3D: 1 unità = 50 cm (`SCALA` in `src/three/layout-muro.ts`). Muro = piano z=0 largo 18 e alto 8 centrato in y=2; pavimento a y=-1.5; banco a z≈2.2; ritratto bio a x=6.5. I target camera stanno in `scene-map.ts`.
 
 ## 8. Build, deploy, prerender
 
