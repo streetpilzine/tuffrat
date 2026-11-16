@@ -7,17 +7,23 @@ export const CURSOR_KINDS: readonly CursorKind[] = ['default', 'spray', 'marker'
 
 interface CursorState {
   kind: CursorKind
+  /** Forma chiesta dall'oggetto 3D sotto il puntatore (hover o drag nel Canvas), o `null`. */
+  tre: CursorKind | null
   set: (kind: CursorKind) => void
+  setTre: (kind: CursorKind | null) => void
 }
 
 export const useCursor = create<CursorState>()((set) => ({
   kind: 'default',
+  tre: null,
   set: (kind) => set((s) => (s.kind === kind ? s : { kind })),
+  setTre: (tre) => set((s) => (s.tre === tre ? s : { tre })),
 }))
 
-/** Deduce la forma da un elemento DOM: `data-cursor` esplicito, poi card/bottoni/link. */
-export function cursorPerElemento(el: Element | null): CursorKind {
+/** Deduce la forma da un elemento DOM: `data-cursor` esplicito, poi card/bottoni/link. Sul Canvas decide l'oggetto 3D. */
+export function cursorPerElemento(el: Element | null, tre: CursorKind | null = null): CursorKind {
   if (!el) return 'default'
+  if (el.tagName === 'CANVAS') return tre ?? 'default'
   const esplicito = el.closest<HTMLElement>('[data-cursor]')?.dataset.cursor
   if (esplicito && (CURSOR_KINDS as readonly string[]).includes(esplicito)) return esplicito as CursorKind
   if (el.closest('.card')) return 'hand'

@@ -2,7 +2,7 @@
 titolo: ARCHITECTURE — redesign TuffRat
 progetto: tuffrat-site
 data: 2026-11-11
-stato: v0.2 (fase 1 in corso; §6 e §7 aggiornati il 12/11/2026)
+stato: v0.3 (fase 2 e base della 3a implementate; §3, §5, §6 e §7 aggiornati il 16/11/2026)
 ---
 
 # ARCHITECTURE
@@ -29,10 +29,11 @@ tuffrat-site/
     main.tsx, App.tsx        providers, router, Stage
     data/                    artista, opere, serie, edizioni, mostre, schema (zod), index
     state/                   useScene, useLayout, useCursor, usePrefs
-    core/                    Stage, SceneRouter, PhysicalObject, Cursor, ListView, motion/
+    core/                    Stage, SceneRouter, CameraRig, gesto, ponte, pan, roundabout, scene-map, Cursor, ListView, motion/
     scenes/                  Muro, Bio, Serie, Edizioni, Mostre, Fotografia(v2), Tv(v2)
-    three/                   Frame, Wall, RoundaboutBoard, Shelf, shaders/
-    ui/                      componenti DOM: Nav, Card, Lightbox, FlipBook, Polyptych, TagIntro
+    three/                   mondo, layout-muro, luce, LucePuntatore, Frame, RoundaboutBoard, Libro, Rullino, Bacheca, Tv
+    ui/                      componenti DOM: Nav, Hud, Lightbox, FlipBook, Polyptych, RoundaboutPanel, TagIntro
+    assets/                  tag.svg (tracciato della tag, importato ?raw)
     styles/                  tokens.css, base.css
     dev/                     sandbox /dev/* (solo in dev)
   scripts/prerender-plugin.ts  plugin Vite: meta per route + sitemap + robots, in closeBundle
@@ -104,7 +105,7 @@ Invarianti verificate dai test: slug unici per collezione; ogni `src` esiste in 
 
 | Route | Scena | Contenuto | Note |
 |---|---|---|---|
-| `/` | Muro | TagIntro → bio breve → opere singole appese | home |
+| `/` | Muro | TagIntro → bio breve → opere singole appese | home; `?intro=1` rivede l'intro |
 | `/bio` | Bio | bio estesa, statement, contatti, link PULSOS | redirect 301 da `/about/` |
 | `/opere/:slug` | Muro | cornice già in primo piano | deep link condivisibile |
 | `/serie` | Muro | indice serie | |
@@ -122,42 +123,46 @@ Preferenza globale `vista=lista` (query param iniziale o interruttore nel Nav) p
 
 ## 6. Stato (zustand)
 
-- `useScene`: `{ scena: 'muro'|'banco'|'bio', target: CameraTarget, inTransizione: boolean, vaiA(pathname) }`. La mappa route → scena/target è la funzione pura `scenaPerRoute` in `src/core/scene-map.ts` (testata); `vaiA` la applica allo store. La navigazione vera resta ai `Link` del router: `vaiA` non cambia l'URL, lo segue.
-- `useLayout`: `{ posizioni: Record<Slug, Pose>, sposta(id, pose), ripristina() }`, persistito in localStorage con versione schema.
-- `useCursor`: `{ kind: 'default'|'spray'|'marker'|'hand'|'grab', set(kind) }`.
+- `useScene`: `{ scena: 'muro'|'banco'|'bio', target: CameraTarget, percorso, fuoco: Slug|null, schedaAperta, roundabout: StatoRoundabout, inTransizione, vaiA(pathname, search, hash), setScheda(aperta) }`. La mappa route → scena/target è la funzione pura `scenaPerRoute` in `src/core/scene-map.ts` (testata); `vaiA` la applica allo store e, per `/opere/:slug`, calcola il target dalla posa corrente della cornice (`posaDi` in `useLayout`) e imposta `fuoco`. La navigazione vera resta al router: `vaiA` non cambia l'URL, lo segue. Gli oggetti 3D navigano con `naviga()` di `src/core/ponte.ts`, dove il `SceneRouter` registra `navigate`.
+- `useLayout`: `{ posizioni: Record<Slug, {x, y}>, ordini: Record<Slug, Slug[]>, sposta(id, punto), ripristina(), riordina(polittico, ordine) }`. `posizioni` (solo i quadri spostati) è persistito in localStorage (`tuffrat.layout.v1`, con versione); `ordini` dei polittici vale per la sessione. `poseHome`, `posePolittici` e `posaDi` derivano le pose sul muro.
+- `useCursor`: `{ kind, tre: CursorKind|null, set(kind), setTre(kind) }` con `kind` in `'default'|'spray'|'marker'|'hand'|'grab'`. `kind` si deduce dall'elemento DOM sotto il puntatore; sul Canvas vale `tre`, che scrive l'oggetto 3D in hover o in drag (`useGesto`).
 - `usePrefs`: `{ vistaLista: boolean, reducedMotion: boolean (da media query), webgl: boolean, toggleVistaLista() }`. `modo3D(prefs)` = `!vistaLista && !reducedMotion && webgl`: è l'unica condizione che monta Stage e Cursor. `vistaLista` iniziale: `?vista=lista|3d` nell'URL, poi `localStorage` (`tuffrat.prefs.v1`), altrimenti 3D. `webgl` = contesto WebGL ottenibile e `deviceMemory` > 2 GB.
-- Stato Roundabout nell'URL (search params), non in store, per condivisibilità.
+- Stato Roundabout nell'URL (`?p=0123&r=0000`: `p[slot]` = tessera, `r[tessera]` = quarti di giro), per condivisibilità. Funzioni pure in `src/core/roundabout.ts` (testate, comprese le 24 × 256 disposizioni raggiungibili); lo store ne tiene una copia letta dall'URL perché il Canvas non vede il router.
 
 ## 7. Contratti dei componenti
 
 ```ts
 // core
 <Stage>                          // Canvas R3F persistente (frameloop="demand"), lazy: monta Muro, Banco e BioWall insieme (un solo mondo); si smonta se !modo3D
-<SceneRouter />                  // lato DOM: useLocation → useScene.vaiA(pathname). Il contesto del router non attraversa il root del Canvas
-<CameraRig />                    // dentro il Canvas: legge useScene.target e porta la camera col tween GSAP (≤800ms, ease TuffRat), invalidate a ogni tick
-<PhysicalObject id pose draggable? snap? onGrab? onRelease? onInspect? cursor?>  // ciclo riposo → afferra → in primo piano → ispeziona → rilascia; usato da Frame, Book
-<Cursor />                       // lazy, solo in modo3D e con (pointer: fine); forma da data-cursor="spray|marker|hand|grab" o dedotta (.card → hand, button → spray, a → marker)
+<SceneRouter />                  // lato DOM: useLocation → useScene.vaiA(pathname, search, hash); registra navigate nel ponte; Esc chiude scheda o fuoco
+<CameraRig />                    // dentro il Canvas: porta la camera sul target (≤800ms, 600ms per il fuoco), calcola la distanza da `inquadra` e dall'aspetto; scorrimento del muro (drag sullo sfondo, rotella, inerzia) in `pan`
+useGesto({ cursore, onClick, onDragStart, onDrag, onDragEnd, onHover })   // click contro drag per un oggetto R3F: è il ciclo riposo → afferra → rilascia di PhysicalObject. Un drag rifiutato (o un gesto rapido su touch) diventa scorrimento del muro
+<Cursor />                       // lazy, solo in modo3D e con (pointer: fine); forma da data-cursor o dedotta nel DOM, da useCursor.tre sul Canvas
 <ListView items label keyOf renderItem />  // ul/li con aria-label; usato da griglie opere, serie, edizioni, mostre in entrambe le viste
 
 // ui (DOM)
-<TagIntro svg onDone skippable oncePerSession />
-<Polyptych polittico ordine onReorder />           // Flip plugin; frecce da tastiera
-<FlipBook pagine titolo onClose />                  // wrapper page-flip, stessi parametri di flipbook.js
+<TagIntro onDone statico? />                        // lazy; tag da src/assets/tag.svg (tools/trace_tag.py), tratti-maschera, spray, bio; la monta Layout una volta per sessione (`?intro=1` la forza)
+<Hud />                                             // solo 3D: istruzioni della scena e azioni senza oggetto (ripristina, copia link, torna al muro, apri scheda)
+<Polyptych polittico ordine onReorder />           // Flip plugin (caricato al primo riordino); drag, frecce da tastiera, pulsanti
+<RoundaboutPanel serie />                           // equivalente DOM del board: click = ruota, frecce o pulsanti = scambia; stesso stato nell'URL
+<FlipBook pagine titolo proporzione? onClose />     // wrapper page-flip in portale su body, stessi parametri di flipbook.js
 <Lightbox opera onClose />                          // vista lista
 <Nav />                                             // voci + interruttore vista lista
 
 // three
-<Wall />                                            // piano con texture, luci
-<Frame opera pose onInspect />                      // mesh + shader luce-puntatore; usa PhysicalObject
-<RoundaboutBoard tessere permutazione rotazioni onChange />
-<Shelf edizioni onOpen /> + <Book edizione pose />
+<Frame opera x y tilt? spostabile? />               // cornice + tela con shader luce-puntatore (luce.ts); hover, click → /opere/:slug, drag con snap se spostabile
+<LucePuntatore />                                   // aggiorna l'uniform condiviso uLuce sul pointermove e invalida
+<RoundaboutBoard />                                 // 4 tessere: click ruota, drag scambia; legge useScene.roundabout, scrive l'URL con replace
+<Libro edizione x z giro? />                        // fanzine sul banco: click → /edizioni/:slug, si alza e sopra si apre FlipBook
+<Rullino id etichetta colore x z giro? aperto onApri />  // bussolotto con scotch e linguetta; click su /fotografia srotola la pellicola; drag sul banco
+<Bacheca />  <Tv />                                 // locandine delle mostre (click → /mostre#id); TV con PULSOS (click → YouTube)
 ```
 
 Contratto comune delle transizioni: ogni scena espone `enter(tl)` ed `exit(tl)` che appendono a una timeline GSAP passata dal `SceneRouter`; in reduced-motion le timeline vengono eseguite con `progress(1)`.
 
-Layout del DOM in modo 3D (deciso in fase 1, 12/11/2026): lo `Stage` è `position: fixed` a tutto schermo sotto tutto; la Nav è una barra flottante traslucida; il contenuto della route sta in un `.sheet` traslucido con `margin-top: 56vh` che scorre sopra la scena. Così ogni route conserva il suo DOM completo (vista lista = stesso markup senza Stage) e la fascia alta dello schermo mostra sempre il muro o il banco. In fase 2 le opere della home escono dal `.sheet` e vivono solo come `Frame` sul muro; i testi restano nel `.sheet`.
+Layout del DOM in modo 3D (rivisto il 16/11/2026, vedi `docs/decisioni.md`): lo `Stage` è `position: fixed` a tutto schermo; la Nav è una barra flottante traslucida; il contenuto della route sta in un `.sheet` che è un cassetto fisso in basso, chiuso di default (si vede solo la maniglia con il titolo, 56 px) e apribile dalla maniglia, dall'`Hud`, da un link con hash o dallo skip link. Da chiuso il corpo è `inert`. La pagina non scorre: scorre il corpo della scheda. Vista lista = stesso markup senza Stage, in flusso normale. Le opere della home in 3D vivono solo come `Frame` sul muro; i testi restano nella scheda. Gli overlay (FlipBook, TagIntro) vanno in portale su `body`, perché la scheda ha un `transform`.
 
-Unità del mondo 3D: 1 unità = 50 cm (`SCALA` in `src/three/layout-muro.ts`). Muro = piano z=0 largo 18 e alto 8 centrato in y=2; pavimento a y=-1.5; banco a z≈2.2; ritratto bio a x=6.5. I target camera stanno in `scene-map.ts`.
+Unità del mondo 3D: 1 unità = 50 cm. Costanti in `src/three/mondo.ts`: muro = piano z=0 da x=-18 a x=14, alto 8, centrato in y=2; pavimento a y=-1.5; banco 4,6 × 1,5 con il piano a y=-0.56 e centro a z=2.2. Zone del muro (ascissa del centro): home 0, Roundabout -6.6, Bustine di tè -10.2, bacheca mostre -13.9, ritratto 6.5, TV 8.5. Sul banco: fanzine a sinistra, rullini a destra. I target camera stanno in `scene-map.ts`; un target può dichiarare `inquadra: { w, h, riempi }` e allora la distanza si calcola nel Canvas dal rapporto d'aspetto (con un tetto: su schermi stretti si vede una parte e il resto si scorre).
 
 ## 8. Build, deploy, prerender
 

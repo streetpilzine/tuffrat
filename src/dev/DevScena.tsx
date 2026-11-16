@@ -3,9 +3,25 @@ import { useCursor } from '../state/useCursor'
 import { modo3D, usePrefs } from '../state/usePrefs'
 import { useScene } from '../state/useScene'
 
-const rotte = ['/', '/bio', '/serie', '/serie/roundabout', '/opere/sinapsi', '/edizioni', '/mostre', '/fotografia', '/non-esiste']
+const rotte = [
+  '/',
+  '/?intro=1',
+  '/opere/sinapsi',
+  '/opere/te-nero-2',
+  '/serie',
+  '/serie/roundabout',
+  '/serie/roundabout?p=3120&r=1000',
+  '/serie/bustine-di-te',
+  '/edizioni',
+  '/edizioni/rivista-test',
+  '/fotografia',
+  '/mostre',
+  '/mostre#teatro-nero-2025',
+  '/bio',
+  '/non-esiste',
+]
 
-/** Sandbox /dev/scena (solo in dev): stato di prefs, scena e cursore, con link per provare le transizioni. */
+/** Sandbox /dev/scena (solo in dev): stato di prefs, scena e cursore, con un link per ogni cosa da provare (intro, fuoco, Roundabout con stato, rivista di prova, hash). */
 export function DevScena() {
   const prefs = usePrefs()
   const scena = useScene()

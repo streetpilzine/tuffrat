@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { DURATA_CAMERA_S, scenaPerRoute } from '../scene-map.ts'
+import { DURATA_CAMERA_S, DURATA_FUOCO_S, scenaPerRoute } from '../scene-map.ts'
+import { ZONA } from '../../three/mondo.ts'
 import { staticRoutes } from '../../routes.meta.ts'
 
 describe('scenaPerRoute', () => {
@@ -34,7 +35,21 @@ describe('scenaPerRoute', () => {
     expect(s.target.pos[2]).toBeGreaterThan(scenaPerRoute('/').target.pos[2])
   })
 
-  it('la transizione resta entro gli 800 ms del piano', () => {
+  it('la transizione resta entro gli 800 ms del piano e il volo in primo piano entro i 600', () => {
     expect(DURATA_CAMERA_S).toBeLessThanOrEqual(0.8)
+    expect(DURATA_FUOCO_S).toBeLessThanOrEqual(0.6)
+  })
+
+  it('ogni serie ha la sua zona del muro', () => {
+    const x = (p: string) => scenaPerRoute(p).target.look[0]
+    expect(x('/serie/roundabout')).toBe(ZONA.roundabout)
+    expect(x('/serie/bustine-di-te')).toBe(ZONA.bustine)
+    expect(x('/mostre')).toBe(ZONA.mostre)
+    expect(x('/serie/2023-2025')).toBe(ZONA.home)
+  })
+
+  it('in 3D la scheda parte chiusa su tutte le route con una scena da guardare', () => {
+    for (const r of staticRoutes()) expect(scenaPerRoute(r.path).schedaAperta, r.path).toBe(false)
+    expect(scenaPerRoute('/pagina-che-non-esiste').schedaAperta).toBe(true)
   })
 })

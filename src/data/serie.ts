@@ -23,7 +23,8 @@ export const serie: Serie[] = [
     tipo: 'modulare',
     opere: ['roundabout-1', 'roundabout-2', 'roundabout-3', 'roundabout-4'],
     modulare: {
-      tessere: [{ opera: 'roundabout-1' }, { opera: 'roundabout-2' }, { opera: 'roundabout-3' }, { opera: 'roundabout-4' }],
+      // Texture quadrate a 2048 px generate da tools/roundabout_tiles.py (accanto c'è la variante -1024 per mobile).
+      tessere: [1, 2, 3, 4].map((n) => ({ opera: `roundabout-${n}`, texture: `/assets/img/opere/serie-02/tiles/tile-0${n}.webp` })),
       permutazioneDefault: [0, 1, 2, 3],
       rotazioniDefault: [0, 0, 0, 0],
     },

@@ -35,6 +35,8 @@ stato: parziale (prima iterazione verificata in dev; mancano Performance panel e
 
 ## Da fare prima di chiudere la fase (entro 28/11)
 
+Aggiornamento del 16/11: la scheda DOM che copriva la scena (e impediva gli screenshot del palco) è stata sostituita da un cassetto chiuso di default; vedi `docs/qa/fase-2.md` e `docs/decisioni.md`. Gli screenshot delle route ora si possono fare.
+
 - Performance panel di Chrome: confermare nessun frame > 50 ms in idle (atteso: con `frameloop="demand"` in idle non si renderizza). Misurare anche durante la transizione su laptop medio.
 - Prova su telefono reale (touch): cursore assente, nav, foglio traslucido, costo del Canvas.
 - Emulare `prefers-reduced-motion` e `?vista=lista` in Chrome e fare il giro completo da tastiera (Tab/Invio) su tutte le route.

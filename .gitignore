@@ -26,3 +26,7 @@ dist-ssr
 # redesign
 .claude/settings.local.json
 docs/qa/screens/
+
+# materiale di prova (rivista generata da un PDF non del sito)
+public/assets/img/edizioni/rivista-test/
+Catalogo Adria Bandiere.pdf

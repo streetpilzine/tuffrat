@@ -481,16 +481,64 @@ dialog.lightbox::backdrop { background: rgba(0,0,0,0.72); }
 }
 .app--3d .nav__links a { font-size: 0.875rem; }
 
-/* Il contenuto DOM scorre sopra la scena, su una superficie traslucida: la scena resta visibile nella fascia alta. */
+/* In 3D il contenuto DOM della route sta in un cassetto fisso in basso (decisione del 16/11/2026):
+   chiuso mostra solo la maniglia e lascia tutto il palco alla scena, aperto scorre al suo interno. La pagina non scorre. */
+html[data-vista="3d"], html[data-vista="3d"] body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+.app--3d { height: 100dvh; overflow: hidden; }
+.stage { touch-action: none; }
 .app--3d .sheet {
-  position: relative; z-index: 1; margin-top: 56vh;
-  background: rgba(247, 247, 245, 0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border); border-radius: 24px 24px 0 0; padding-top: 24px;
+  position: fixed; left: 50%; bottom: 0; z-index: 2;
+  width: min(960px, calc(100% - 32px)); max-height: min(72dvh, calc(100dvh - 96px));
+  display: flex; flex-direction: column;
+  background: rgba(247, 247, 245, 0.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border); border-radius: 24px 24px 0 0; box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.08);
+  transform: translate(-50%, 0); transition: transform 500ms var(--ease);
 }
+.app--3d .sheet.is-chiusa { transform: translate(-50%, calc(100% - 56px)); }
+.sheet__maniglia {
+  flex: none; height: 56px; width: 100%; padding: 0 24px; border: 0; background: transparent; color: var(--text);
+  font: inherit; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  border-radius: 24px 24px 0 0; position: relative;
+}
+.sheet__maniglia::before {
+  content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px;
+  border-radius: 999px; background: var(--border); transition: background-color 300ms var(--ease);
+}
+.sheet__maniglia:hover::before { background: var(--muted); }
+.sheet__maniglia:focus-visible { outline-offset: -4px; }
+.sheet__titolo { font-size: 1rem; line-height: 1.5rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sheet__azione { flex: none; font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; color: var(--muted); transition: color 300ms var(--ease); }
+.sheet__maniglia:hover .sheet__azione { color: var(--text); }
+.app--3d .sheet__corpo { overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
 .app--3d .hero { padding-top: 16px; }
+
+/* Barra di contesto sopra la scheda: cosa si può fare nella scena e le azioni che non hanno un oggetto 3D (ripristina, torna). */
+.hud {
+  position: fixed; left: 16px; right: 16px; bottom: 72px; z-index: 2; margin: 0 auto; width: fit-content;
+  max-width: min(720px, calc(100% - 32px)); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
+  padding: 8px 8px 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+  background: rgba(247, 247, 245, 0.86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: opacity 300ms var(--ease);
+}
+.hud.is-nascosto { opacity: 0; pointer-events: none; }
+.hud__testo { margin: 0; font-size: 0.875rem; line-height: 1.25rem; color: var(--muted); text-wrap: pretty; }
+.hud__testo strong { color: var(--text); font-weight: 600; }
+.hud__azioni { display: flex; gap: 8px; }
+.hud__btn {
+  font: inherit; font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; padding: 8px 12px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--card); color: var(--text); cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: background-color 300ms var(--ease), color 300ms var(--ease), transform 300ms var(--ease);
+}
+.hud__btn:hover { background: var(--accent); color: #fff; }
+.hud__btn:active { transform: scale(0.98); }
+.hud:only-child, .hud__azioni:empty { display: none; }
 @media (max-width: 640px) {
-  .app--3d .nav { border-radius: 12px; gap: 8px; }
-  .app--3d .sheet { margin-top: 48vh; }
+  /* Telefono: marchio e interruttore sulla prima riga, voci sulla seconda. */
+  .app--3d .nav { border-radius: 16px; gap: 4px 8px; top: 8px; width: calc(100% - 16px); padding: 8px 12px; }
+  .app--3d .nav__links { order: 3; width: 100%; justify-content: space-between; gap: 4px 8px; }
+  .app--3d .nav__vista { padding: 4px 12px; }
+  .app--3d .sheet { width: calc(100% - 16px); }
+  .hud { border-radius: 16px; padding: 8px 12px; gap: 8px; }
 }
 
 /* Cursore contestuale: solo con puntatore fine, solo in 3D. L'icona è bianca in blend difference, così si vede su chiaro e su scuro. */
@@ -508,3 +556,68 @@ html.cursor-custom, html.cursor-custom * { cursor: none !important; }
 /* Sandbox /dev */
 .dev pre { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow: auto; font-size: 0.875rem; }
 .dev .lista { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0; }
+
+/* ══ Fase 2 e 3a ══ */
+/* Sfogliatore: entra con un attimo di ritardo, mentre in 3D la rivista si alza dal banco. */
+@keyframes flipbook-entra { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes flipbook-fondo { from { opacity: 0; } to { opacity: 1; } }
+.flipbook-overlay.is-open .flipbook__backdrop { animation: flipbook-fondo 400ms var(--ease) both; }
+.flipbook-overlay.is-open .flipbook__content { animation: flipbook-entra 500ms var(--ease) 250ms both; }
+.flipbook__book { opacity: 0; transition: opacity 300ms var(--ease); width: 100%; margin: 0 auto; }
+.flipbook__content { height: min(88dvh, 1600px); }
+.flipbook__book.is-pronto { opacity: 1; }
+
+/* Roundabout nel DOM: griglia 2×2 senza fughe larghe, le tessere ruotano sul posto. */
+.roundabout { margin-top: 16px; display: grid; gap: 24px; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); align-items: start; }
+.roundabout__griglia { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+.roundabout__tessera { padding: 0; border: 0; background: #b89b6f; cursor: pointer; overflow: hidden; border-radius: 8px; aspect-ratio: 1; transition: transform 300ms var(--ease); }
+.roundabout__tessera img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms var(--ease); }
+.roundabout__tessera:hover { transform: scale(0.99); }
+.roundabout__tessera:active { transform: scale(0.98); }
+.roundabout__tessera:focus-visible { outline-offset: -4px; position: relative; z-index: 1; }
+.roundabout__aiuto { margin: 0 0 16px; color: var(--muted); font-size: 0.875rem; line-height: 1.25rem; }
+.roundabout__pulsanti { display: flex; flex-wrap: wrap; gap: 8px; }
+.roundabout__pulsanti .link, .roundabout__pulsanti .button, .polittico__sposta .link { font: inherit; font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; padding: 8px 12px; cursor: pointer; border-width: 1px; }
+.roundabout__pulsanti .button { border: 1px solid var(--accent); }
+.link:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+@media (max-width: 720px) { .roundabout { grid-template-columns: 1fr; } }
+
+/* Polittico: pannelli complanari affiancati nelle proporzioni reali, riordinabili. */
+.polittico__pannelli { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; align-items: flex-start; max-width: 880px; }
+.polittico__pannelli li { min-width: 0; }
+.polittico__pannello { cursor: grab; touch-action: pan-y; user-select: none; border-radius: 4px; overflow: hidden; background: var(--card); box-shadow: var(--shadow); position: relative; }
+.polittico__pannello.is-preso { cursor: grabbing; z-index: 2; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2); }
+.polittico__pannello:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.polittico__didascalia { margin: 8px 0 4px; color: var(--muted); font-size: 0.875rem; line-height: 1.25rem; }
+.polittico__sposta { display: flex; gap: 4px; }
+
+/* TagIntro: porta d'ingresso. Fondo chiaro, la tag si scrive, lo spray annerisce lo schermo, dal nero esce la bio. */
+.tagintro { position: fixed; inset: 0; z-index: 2500; background: var(--bg); color: #111; display: grid; place-items: center; overflow: hidden; transition: opacity 400ms var(--ease); }
+.tagintro.is-uscita { opacity: 0; pointer-events: none; }
+.tagintro--attesa { z-index: 2499; }
+.tagintro__spray { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tagintro__spray path { fill: none; stroke: #111; stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.tagintro__colonna { position: relative; width: min(560px, calc(100% - 48px)); display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
+.tagintro__tag { width: min(340px, 64vw); color: #111; transform-origin: 50% 50%; }
+.tagintro__tag svg { display: block; width: 100%; height: auto; overflow: visible; }
+.tagintro__tratto { fill: none; stroke: #fff; stroke-width: 84; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.tagintro__bio { color: #f7f7f5; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.tagintro__bio > * { opacity: 0; transform: translateY(24px); margin: 0; }
+.tagintro__eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; line-height: 1rem; color: #b9b9b4; }
+.tagintro__testo { font-size: 1rem; line-height: 1.5rem; text-wrap: pretty; max-width: 46ch; }
+.tagintro__azioni { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.tagintro__btn {
+  font: inherit; font-size: 1rem; line-height: 1.5rem; font-weight: 600; padding: 8px 24px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(247, 247, 245, 0.4); background: transparent; color: #f7f7f5;
+  transition: background-color 300ms var(--ease), color 300ms var(--ease), transform 300ms var(--ease);
+}
+.tagintro__btn--pieno, .tagintro__btn:hover { background: #f7f7f5; color: #111; border-color: #f7f7f5; }
+.tagintro__btn--pieno:hover { transform: translateY(-1px); }
+.tagintro__btn:active { transform: scale(0.98); }
+.tagintro__btn:focus-visible, .tagintro__salta:focus-visible { outline: 2px solid #f7f7f5; outline-offset: 3px; }
+.tagintro__salta {
+  position: absolute; right: 16px; bottom: 16px; font: inherit; font-size: 0.875rem; line-height: 1.25rem; font-weight: 600;
+  padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); color: var(--text); cursor: pointer;
+  transition: opacity 300ms var(--ease);
+}
+.tagintro.is-finita .tagintro__salta { opacity: 0; pointer-events: none; }

@@ -39,7 +39,12 @@ const ICONE: Record<CursorKind, JSX.Element> = {
  */
 export default function Cursor() {
   const ref = useRef<HTMLDivElement>(null)
-  const kind = useCursor((s) => s.kind)
+  const base = useCursor((s) => s.kind)
+  const tre = useCursor((s) => s.tre)
+  const sulCanvas = useRef(false)
+  const [canvas, setCanvas] = useState(false)
+  // Sul Canvas la forma la decide l'oggetto 3D sotto il puntatore (hover o drag).
+  const kind = canvas ? (tre ?? 'default') : base
   const [fine, setFine] = useState(() => window.matchMedia('(pointer: fine)').matches)
 
   useEffect(() => {
@@ -68,7 +73,13 @@ export default function Cursor() {
       }
       xTo(e.clientX)
       yTo(e.clientY)
-      set(cursorPerElemento(e.target as Element))
+      const sotto = e.target as Element
+      const ora = sotto.tagName === 'CANVAS'
+      if (ora !== sulCanvas.current) {
+        sulCanvas.current = ora
+        setCanvas(ora)
+      }
+      if (!ora) set(cursorPerElemento(sotto))
     }
     const onOut = (e: PointerEvent) => {
       if (e.relatedTarget === null) {

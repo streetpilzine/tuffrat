@@ -2,6 +2,8 @@ import { Link } from 'react-router'
 import { artista, mostre, opereInHome } from '../data'
 import { Contatti } from '../ui/Contatti'
 import { OpereGrid } from '../ui/OpereGrid'
+import { modo3D, usePrefs } from '../state/usePrefs'
+import { useScene } from '../state/useScene'
 
 const hub = [
   { to: '/serie', titolo: 'Serie', testo: 'Corpi di lavoro organizzati per serie.' },
@@ -13,6 +15,9 @@ const hub = [
 export function Home() {
   const mindTheGap = mostre.find((m) => m.link?.instagram)
   const { pulsos } = artista.video
+  // In 3D le opere della home sono le cornici sul muro: la griglia esce dalla scheda e «Galleria» la chiude.
+  const in3D = modo3D(usePrefs())
+  const setScheda = useScene((s) => s.setScheda)
   return (
     <>
       <header className="hero">
@@ -28,9 +33,15 @@ export function Home() {
             ))}
           </p>
           <div className="hero__actions">
-            <a className="button" href="#galleria">
-              Galleria
-            </a>
+            {in3D ? (
+              <button type="button" className="button" onClick={() => setScheda(false)}>
+                Galleria
+              </button>
+            ) : (
+              <a className="button" href="#galleria">
+                Galleria
+              </a>
+            )}
             <a className="link" href="#contatti">
               Contatti
             </a>
@@ -74,13 +85,15 @@ export function Home() {
         </div>
       </section>
 
-      <section className="gallery" id="galleria" aria-labelledby="galleria-titolo">
-        <div className="section-header">
-          <h2 id="galleria-titolo">Galleria</h2>
-          <p>Selezione di lavori recenti</p>
-        </div>
-        <OpereGrid opere={opereInHome} label="Galleria di opere" />
-      </section>
+      {!in3D && (
+        <section className="gallery" id="galleria" aria-labelledby="galleria-titolo">
+          <div className="section-header">
+            <h2 id="galleria-titolo">Galleria</h2>
+            <p>Selezione di lavori recenti</p>
+          </div>
+          <OpereGrid opere={opereInHome} label="Galleria di opere" />
+        </section>
+      )}
 
       <section className="hub" aria-label="Sezioni del sito">
         {hub.map((h) => (
