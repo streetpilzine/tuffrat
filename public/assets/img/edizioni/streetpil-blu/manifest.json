@@ -1,0 +1,106 @@
+{
+  "slug": "streetpil-blu",
+  "numero": 3,
+  "titolo": "Cianotipo",
+  "colore": "#1f4a8a",
+  "coloreTesto": "#f7f7f5",
+  "cartellaSorgente": "3-blu",
+  "font": "Manrope (variable, pesi Regular/Bold)",
+  "pagine": [
+    {
+      "file": "/assets/img/edizioni/streetpil-blu/pages/01.webp",
+      "tipo": "copertina",
+      "width": 1500,
+      "height": 1000,
+      "alt": "Copertina di StreetPIL n. 3, Cianotipo",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-blu/pages/02.webp",
+      "tipo": "titolo",
+      "width": 1500,
+      "height": 1000
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-blu/pages/03.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "3-blu",
+        "file": "001064160007 (2).jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Sassi e foglie sul terreno in toni azzurri, sotto bolle rosa",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-blu/pages/04.webp",
+      "tipo": "foto",
+      "width": 1080,
+      "height": 720,
+      "sorgente": {
+        "cartella": "3-blu",
+        "file": "FB_IMG_1603893597811.jpg",
+        "width": 1080,
+        "height": 720
+      },
+      "alt": "Una persona in piedi dietro una consolle, sotto un telo teso tra gli alberi, accanto a una cassa acustica",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-blu/pages/05.webp",
+      "tipo": "foto",
+      "width": 1080,
+      "height": 720,
+      "sorgente": {
+        "cartella": "3-blu",
+        "file": "FB_IMG_1603893602652.jpg",
+        "width": 1080,
+        "height": 720
+      },
+      "alt": "Un bosco di abeti con un tavolo e una figura in lontananza, e un bagliore giallo sul lato destro",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-blu/pages/06.webp",
+      "tipo": "foto",
+      "width": 1080,
+      "height": 720,
+      "sorgente": {
+        "cartella": "3-blu",
+        "file": "FB_IMG_1603893604941.jpg",
+        "width": 1080,
+        "height": 720
+      },
+      "alt": "Tronchi d'albero e, a destra, una persona in piedi sotto un ombrello, tra aloni marroni e rossi della pellicola",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-blu/pages/07.webp",
+      "tipo": "foto",
+      "width": 1014,
+      "height": 676,
+      "sorgente": {
+        "cartella": "3-blu",
+        "file": "FB_IMG_1603893684600 (2).jpg",
+        "width": 1014,
+        "height": 676
+      },
+      "alt": "Un graffito chiaro su un muro accanto a una scala di cemento, in toni grigi e azzurri",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-blu/pages/08.webp",
+      "tipo": "colophon",
+      "width": 1500,
+      "height": 1000
+    }
+  ],
+  "copertina": {
+    "file": "/assets/img/edizioni/streetpil-blu/cover.webp",
+    "width": 1500,
+    "height": 1000
+  }
+}

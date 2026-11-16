@@ -1,0 +1,106 @@
+{
+  "slug": "streetpil-rave",
+  "numero": 4,
+  "titolo": "Acido",
+  "colore": "#111111",
+  "coloreTesto": "#e0309a",
+  "cartellaSorgente": "4-rave",
+  "font": "Manrope (variable, pesi Regular/Bold)",
+  "pagine": [
+    {
+      "file": "/assets/img/edizioni/streetpil-rave/pages/01.webp",
+      "tipo": "copertina",
+      "width": 1500,
+      "height": 1000,
+      "alt": "Copertina di StreetPIL n. 4, Acido",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rave/pages/02.webp",
+      "tipo": "titolo",
+      "width": 1500,
+      "height": 1000
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rave/pages/03.webp",
+      "tipo": "foto",
+      "width": 1080,
+      "height": 720,
+      "sorgente": {
+        "cartella": "4-rave",
+        "file": "FB_IMG_1603893595367 (2).jpg",
+        "width": 1080,
+        "height": 720
+      },
+      "alt": "Tendoni e furgoni decorati davanti a una fila di alberi, in colori invertiti gialli e blu",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rave/pages/04.webp",
+      "tipo": "foto",
+      "width": 1080,
+      "height": 720,
+      "sorgente": {
+        "cartella": "4-rave",
+        "file": "FB_IMG_1603893655258 (2).jpg",
+        "width": 1080,
+        "height": 720
+      },
+      "alt": "Una folla in un prato sotto fasci di luce diagonali, con le colline sullo sfondo, in giallo e blu",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rave/pages/05.webp",
+      "tipo": "foto",
+      "width": 1080,
+      "height": 720,
+      "sorgente": {
+        "cartella": "4-rave",
+        "file": "FB_IMG_1603893695090 (2).jpg",
+        "width": 1080,
+        "height": 720
+      },
+      "alt": "Persone di spalle sotto un tendone davanti a un muro di casse acustiche, in giallo e blu",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rave/pages/06.webp",
+      "tipo": "foto",
+      "width": 1080,
+      "height": 720,
+      "sorgente": {
+        "cartella": "4-rave",
+        "file": "FB_IMG_1603893701401 (2).jpg",
+        "width": 1080,
+        "height": 720
+      },
+      "alt": "Camper e auto parcheggiati in un prato, con le colline sullo sfondo, in giallo e blu",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rave/pages/07.webp",
+      "tipo": "foto",
+      "width": 1600,
+      "height": 1067,
+      "sorgente": {
+        "cartella": "4-rave",
+        "file": "IMG_20220615_0111.jpg",
+        "width": 6745,
+        "height": 4497
+      },
+      "alt": "Persone di spalle davanti a un palco, con alberi spogli e un traliccio, in giallo e blu",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rave/pages/08.webp",
+      "tipo": "colophon",
+      "width": 1500,
+      "height": 1000
+    }
+  ],
+  "copertina": {
+    "file": "/assets/img/edizioni/streetpil-rave/cover.webp",
+    "width": 1500,
+    "height": 1000
+  }
+}

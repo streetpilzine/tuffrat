@@ -10,6 +10,7 @@ import { Mostre } from './pages/Mostre'
 import { Fotografia } from './pages/Fotografia'
 import { NotFound } from './pages/NotFound'
 import { DevScena } from './dev/DevScena'
+import { DevBioTv } from './dev/DevBioTv'
 
 /** Route reali (ARCHITECTURE.md §5). Ogni route è una pagina DOM (vista lista); in modo 3D il Layout monta anche Stage e SceneRouter. */
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="mostre/:slug" element={<Mostre />} />
           <Route path="fotografia" element={<Fotografia />} />
           {import.meta.env.DEV && <Route path="dev/scena" element={<DevScena />} />}
+          {import.meta.env.DEV && <Route path="dev/bio-tv" element={<DevBioTv />} />}
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

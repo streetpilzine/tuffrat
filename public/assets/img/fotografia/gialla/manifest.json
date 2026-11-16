@@ -1,0 +1,428 @@
+{
+  "id": "gialla",
+  "etichetta": "gialla",
+  "rotazione": 90,
+  "cartellaSorgente": "D:\\ANALOGIC_DREAM\\malli\\StreetPIL\\gialla",
+  "foto": [
+    {
+      "file": "/assets/img/fotografia/gialla/01.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/01.webp",
+      "width": 564,
+      "height": 851,
+      "widthPiccola": 564,
+      "heightPiccola": 851,
+      "sorgente": {
+        "file": "foto_20221126_0037.jpg",
+        "width": 564,
+        "height": 851
+      },
+      "alt": "Un muro giallo con un tubo verticale e scritte a mano sbiadite",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/02.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/02.webp",
+      "width": 562,
+      "height": 905,
+      "widthPiccola": 562,
+      "heightPiccola": 905,
+      "sorgente": {
+        "file": "foto_20221126_0038.jpg",
+        "width": 562,
+        "height": 905
+      },
+      "alt": "Un edificio illuminato con un albero davanti, visto attraverso un arco e capovolto nell'inquadratura, su fondo blu scuro",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/03.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/03.webp",
+      "width": 560,
+      "height": 866,
+      "widthPiccola": 560,
+      "heightPiccola": 866,
+      "sorgente": {
+        "file": "foto_20221126_0039.jpg",
+        "width": 560,
+        "height": 866
+      },
+      "alt": "Un grattacielo visto dal basso e, sotto, un graffito a lettere tonde su una vetrina",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/04.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/04.webp",
+      "width": 560,
+      "height": 865,
+      "widthPiccola": 560,
+      "heightPiccola": 865,
+      "sorgente": {
+        "file": "foto_20221126_0040.jpg",
+        "width": 560,
+        "height": 865
+      },
+      "alt": "La punta di un grattacielo in forte scorcio, capovolta nell'inquadratura",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/05.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/05.webp",
+      "width": 560,
+      "height": 864,
+      "widthPiccola": 560,
+      "heightPiccola": 864,
+      "sorgente": {
+        "file": "foto_20221126_0041.jpg",
+        "width": 560,
+        "height": 864
+      },
+      "alt": "Una strada con tende da sole chiare e un cartello con la freccia, girata di lato",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/06.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/06.webp",
+      "width": 564,
+      "height": 859,
+      "widthPiccola": 564,
+      "heightPiccola": 859,
+      "sorgente": {
+        "file": "foto_20221126_0042.jpg",
+        "width": 564,
+        "height": 859
+      },
+      "alt": "Una tenda da sole chiara su una facciata con un'inferriata, girata di lato",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/07.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/07.webp",
+      "width": 564,
+      "height": 865,
+      "widthPiccola": 564,
+      "heightPiccola": 865,
+      "sorgente": {
+        "file": "foto_20221126_0043.jpg",
+        "width": 564,
+        "height": 865
+      },
+      "alt": "Una saracinesca abbassata con un graffito a lettere tonde, in un palazzo a bugnato",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/08.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/08.webp",
+      "width": 564,
+      "height": 875,
+      "widthPiccola": 564,
+      "heightPiccola": 875,
+      "sorgente": {
+        "file": "foto_20221126_0044.jpg",
+        "width": 564,
+        "height": 875
+      },
+      "alt": "Una via con case a balconi, auto parcheggiate e nuvole nel cielo",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/09.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/09.webp",
+      "width": 565,
+      "height": 865,
+      "widthPiccola": 565,
+      "heightPiccola": 865,
+      "sorgente": {
+        "file": "foto_20221126_0045.jpg",
+        "width": 565,
+        "height": 865
+      },
+      "alt": "Una persona seduta su un muretto accanto a un cartello di proprietà privata e a due armadi dei contatori",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/10.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/10.webp",
+      "width": 563,
+      "height": 850,
+      "widthPiccola": 563,
+      "heightPiccola": 850,
+      "sorgente": {
+        "file": "foto_20221126_0046.jpg",
+        "width": 563,
+        "height": 850
+      },
+      "alt": "Una persona in piedi davanti a un muro con un graffito, sotto una grande velatura di luce",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/11.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/11.webp",
+      "width": 562,
+      "height": 854,
+      "widthPiccola": 562,
+      "heightPiccola": 854,
+      "sorgente": {
+        "file": "foto_20221126_0047.jpg",
+        "width": 562,
+        "height": 854
+      },
+      "alt": "Un graffito a lettere tonde su un muro, in toni verdi, girato di lato",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/12.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/12.webp",
+      "width": 562,
+      "height": 874,
+      "widthPiccola": 562,
+      "heightPiccola": 874,
+      "sorgente": {
+        "file": "foto_20221126_0048.jpg",
+        "width": 562,
+        "height": 874
+      },
+      "alt": "Una superficie verde quasi vuota con una macchia rossastra al centro",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/13.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/13.webp",
+      "width": 564,
+      "height": 904,
+      "widthPiccola": 564,
+      "heightPiccola": 904,
+      "sorgente": {
+        "file": "foto_20221126_0049.jpg",
+        "width": 564,
+        "height": 904
+      },
+      "alt": "Una sagoma chiara e sfocata sul bordo sinistro di un fotogramma scuro",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/14.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/14.webp",
+      "width": 562,
+      "height": 831,
+      "widthPiccola": 562,
+      "heightPiccola": 831,
+      "sorgente": {
+        "file": "foto_20221126_0050.jpg",
+        "width": 562,
+        "height": 831
+      },
+      "alt": "Il volto di una persona che ride, capovolto nell'inquadratura, su fondo scuro",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/15.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/15.webp",
+      "width": 562,
+      "height": 791,
+      "widthPiccola": 562,
+      "heightPiccola": 791,
+      "sorgente": {
+        "file": "foto_20221126_0051.jpg",
+        "width": 562,
+        "height": 791
+      },
+      "alt": "Una persona che ride vista dall'alto, capovolta nell'inquadratura, su fondo scuro",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/16.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/16.webp",
+      "width": 562,
+      "height": 918,
+      "widthPiccola": 562,
+      "heightPiccola": 918,
+      "sorgente": {
+        "file": "foto_20221126_0052.jpg",
+        "width": 562,
+        "height": 918
+      },
+      "alt": "Un segnale stradale a strisce illuminato nel buio",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/17.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/17.webp",
+      "width": 562,
+      "height": 827,
+      "widthPiccola": 562,
+      "heightPiccola": 827,
+      "sorgente": {
+        "file": "foto_20221126_0053.jpg",
+        "width": 562,
+        "height": 827
+      },
+      "alt": "La vetrina di un locale di specialità turche con una bicicletta appesa, capovolta nell'inquadratura",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/18.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/18.webp",
+      "width": 569,
+      "height": 853,
+      "widthPiccola": 569,
+      "heightPiccola": 853,
+      "sorgente": {
+        "file": "foto_20221126_0054.jpg",
+        "width": 569,
+        "height": 853
+      },
+      "alt": "Un uomo con la barba guarda verso l'obiettivo dal basso, con una gamba in primo piano",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/19.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/19.webp",
+      "width": 562,
+      "height": 888,
+      "widthPiccola": 562,
+      "heightPiccola": 888,
+      "sorgente": {
+        "file": "foto_20221126_0055.jpg",
+        "width": 562,
+        "height": 888
+      },
+      "alt": "Una scia di luce gialla su fondo verde scuro",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/20.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/20.webp",
+      "width": 560,
+      "height": 888,
+      "widthPiccola": 560,
+      "heightPiccola": 888,
+      "sorgente": {
+        "file": "foto_20221126_0056.jpg",
+        "width": 560,
+        "height": 888
+      },
+      "alt": "Una persona che sorride con un braccio alzato, capovolta nell'inquadratura, su fondo blu",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/21.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/21.webp",
+      "width": 564,
+      "height": 883,
+      "widthPiccola": 564,
+      "heightPiccola": 883,
+      "sorgente": {
+        "file": "foto_20221126_0057.jpg",
+        "width": 564,
+        "height": 883
+      },
+      "alt": "Il volto di una persona illuminato dal lampo, in basso a sinistra, su fondo nero",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/22.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/22.webp",
+      "width": 564,
+      "height": 856,
+      "widthPiccola": 564,
+      "heightPiccola": 856,
+      "sorgente": {
+        "file": "foto_20221126_0058.jpg",
+        "width": 564,
+        "height": 856
+      },
+      "alt": "Scie di luce arancione su fondo verde",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/23.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/23.webp",
+      "width": 564,
+      "height": 859,
+      "widthPiccola": 564,
+      "heightPiccola": 859,
+      "sorgente": {
+        "file": "foto_20221126_0059.jpg",
+        "width": 564,
+        "height": 859
+      },
+      "alt": "Un muro coperto di murales girato di lato, in toni arancio",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/24.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/24.webp",
+      "width": 560,
+      "height": 866,
+      "widthPiccola": 560,
+      "heightPiccola": 866,
+      "sorgente": {
+        "file": "foto_20221126_0060.jpg",
+        "width": 560,
+        "height": 866
+      },
+      "alt": "Un animale chiaro tra i rami, dietro una rete metallica, di notte",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/25.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/25.webp",
+      "width": 560,
+      "height": 868,
+      "widthPiccola": 560,
+      "heightPiccola": 868,
+      "sorgente": {
+        "file": "foto_20221126_0061.jpg",
+        "width": 560,
+        "height": 868
+      },
+      "alt": "Una via tra i palazzi girata di lato, in toni arancio",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/26.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/26.webp",
+      "width": 562,
+      "height": 863,
+      "widthPiccola": 562,
+      "heightPiccola": 863,
+      "sorgente": {
+        "file": "foto_20221126_0062.jpg",
+        "width": 562,
+        "height": 863
+      },
+      "alt": "Un graffito a lettere tonde su una saracinesca vista in scorcio",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/27.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/27.webp",
+      "width": 564,
+      "height": 864,
+      "widthPiccola": 564,
+      "heightPiccola": 864,
+      "sorgente": {
+        "file": "foto_20221126_0063.jpg",
+        "width": 564,
+        "height": 864
+      },
+      "alt": "Una vetrina illuminata con manichini e una sagoma scura davanti, girata di lato",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/gialla/28.webp",
+      "filePiccola": "/assets/img/fotografia/gialla/28.webp",
+      "width": 562,
+      "height": 834,
+      "widthPiccola": 562,
+      "heightPiccola": 834,
+      "sorgente": {
+        "file": "foto_20221126_0064.jpg",
+        "width": 562,
+        "height": 834
+      },
+      "alt": "Un orizzonte scuro sotto un cielo molto chiaro, con un riquadro bianco in alto",
+      "volti": false
+    }
+  ]
+}

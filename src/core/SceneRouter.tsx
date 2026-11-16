@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
+import { useOggetti } from '../state/useOggetti'
 import { useScene } from '../state/useScene'
 import { percorsoDiRitorno, registraNavigate } from './ponte'
 
@@ -22,14 +23,16 @@ export function SceneRouter() {
     return () => registraNavigate(null)
   }, [navigate])
 
-  // Esc: chiude la scheda se è aperta, altrimenti rimette a posto l'opera in primo piano.
+  // Esc: rimette a posto l'oggetto in primo piano (rullino, ritratto girato, TV), poi l'opera in primo piano, poi chiude la scheda.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented) return
       if (document.querySelector('dialog[open], .flipbook-overlay, .tagintro')) return
       const { fuoco, schedaAperta, setScheda } = useScene.getState()
       if (document.documentElement.dataset.vista !== '3d') return
-      if (fuoco) void navigate(percorsoDiRitorno(fuoco))
+      const { primoPiano, setPrimoPiano } = useOggetti.getState()
+      if (primoPiano) setPrimoPiano(null)
+      else if (fuoco) void navigate(percorsoDiRitorno(fuoco))
       else if (schedaAperta) setScheda(false)
     }
     window.addEventListener('keydown', onKey)

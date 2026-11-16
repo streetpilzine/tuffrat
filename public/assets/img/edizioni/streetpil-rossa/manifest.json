@@ -1,0 +1,106 @@
+{
+  "slug": "streetpil-rossa",
+  "numero": 2,
+  "titolo": "Ruggine",
+  "colore": "#a8322b",
+  "coloreTesto": "#f7f7f5",
+  "cartellaSorgente": "2-rossa",
+  "font": "Manrope (variable, pesi Regular/Bold)",
+  "pagine": [
+    {
+      "file": "/assets/img/edizioni/streetpil-rossa/pages/01.webp",
+      "tipo": "copertina",
+      "width": 1500,
+      "height": 1000,
+      "alt": "Copertina di StreetPIL n. 2, Ruggine",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rossa/pages/02.webp",
+      "tipo": "titolo",
+      "width": 1500,
+      "height": 1000
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rossa/pages/03.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "2-rossa",
+        "file": "001064160010.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Un viadotto ferroviario con la ringhiera e i pali della linea elettrica contro il cielo arancio, sotto bolle rosa",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rossa/pages/04.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "2-rossa",
+        "file": "001064160016.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Primo piano di due mani che stringono una bottiglia e, dietro, una persona con la barba che sorride, in toni arancio",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rossa/pages/05.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "2-rossa",
+        "file": "001064160024.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Una persona attraversa i binari di una ferrovia, con case, alberi e una montagna sullo sfondo, in toni arancio",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rossa/pages/06.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "2-rossa",
+        "file": "001064160029.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Foglie di una pianta rampicante e la loro ombra su un muro, in toni arancio, sotto bolle rosa",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rossa/pages/07.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "2-rossa",
+        "file": "001064160031.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Il volto di una persona sdraiata, di profilo e con gli occhi chiusi, con una mano sopra la testa, in luce arancio",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-rossa/pages/08.webp",
+      "tipo": "colophon",
+      "width": 1500,
+      "height": 1000
+    }
+  ],
+  "copertina": {
+    "file": "/assets/img/edizioni/streetpil-rossa/cover.webp",
+    "width": 1500,
+    "height": 1000
+  }
+}

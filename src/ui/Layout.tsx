@@ -103,6 +103,8 @@ export function Layout() {
           <Stage />
         </Suspense>
       )}
+      {/* DOM agganciato alla scena (l'iframe del video nella TV): fratello dello Stage, che è `aria-hidden`, con il suo contesto di impilamento sotto Nav, Hud e scheda. */}
+      {in3D && <div className="stage-html" id="stage-html" />}
       <Nav />
       {in3D && <Hud />}
       {/* In 3D la scheda è un cassetto fisso in basso: chiusa lascia libero il palco, aperta scorre al suo interno. */}

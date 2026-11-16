@@ -1,0 +1,368 @@
+{
+  "id": "ben",
+  "etichetta": "ben",
+  "rotazione": 0,
+  "cartellaSorgente": "D:\\ANALOGIC_DREAM\\bEn_ultimoAnno",
+  "foto": [
+    {
+      "file": "/assets/img/fotografia/ben/01.webp",
+      "filePiccola": "/assets/img/fotografia/ben/01-1024.webp",
+      "width": 1600,
+      "height": 1062,
+      "widthPiccola": 1024,
+      "heightPiccola": 680,
+      "sorgente": {
+        "file": "foto_20241231_0001.jpg",
+        "width": 3408,
+        "height": 2263
+      },
+      "alt": "La riva di un fiume di notte, con riflessi di luce sull'acqua e una panchina tra i cespugli, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/02.webp",
+      "filePiccola": "/assets/img/fotografia/ben/02-1024.webp",
+      "width": 1060,
+      "height": 1600,
+      "widthPiccola": 678,
+      "heightPiccola": 1024,
+      "sorgente": {
+        "file": "foto_20241231_0002.jpg",
+        "width": 3408,
+        "height": 2257
+      },
+      "alt": "Un palazzo con i balconi bianchi visto dal basso contro il cielo nero, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/03.webp",
+      "filePiccola": "/assets/img/fotografia/ben/03-1024.webp",
+      "width": 1600,
+      "height": 1047,
+      "widthPiccola": 1024,
+      "heightPiccola": 670,
+      "sorgente": {
+        "file": "foto_20241231_0003.jpg",
+        "width": 3422,
+        "height": 2240
+      },
+      "alt": "La facciata curva di un edificio a lamelle verticali, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/04.webp",
+      "filePiccola": "/assets/img/fotografia/ben/04-1024.webp",
+      "width": 1600,
+      "height": 1047,
+      "widthPiccola": 1024,
+      "heightPiccola": 670,
+      "sorgente": {
+        "file": "foto_20241231_0004.jpg",
+        "width": 3408,
+        "height": 2231
+      },
+      "alt": "Due sagome in controluce davanti a una finestra, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/05.webp",
+      "filePiccola": "/assets/img/fotografia/ben/05-1024.webp",
+      "width": 1600,
+      "height": 1048,
+      "widthPiccola": 1024,
+      "heightPiccola": 671,
+      "sorgente": {
+        "file": "foto_20241231_0005.jpg",
+        "width": 3408,
+        "height": 2233
+      },
+      "alt": "Un neonato in tutina a pois sdraiato su un fondo scuro, in bianco e nero",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/ben/06.webp",
+      "filePiccola": "/assets/img/fotografia/ben/06-1024.webp",
+      "width": 1600,
+      "height": 1031,
+      "widthPiccola": 1024,
+      "heightPiccola": 660,
+      "sorgente": {
+        "file": "foto_20241231_0006.jpg",
+        "width": 3492,
+        "height": 2251
+      },
+      "alt": "Un cielo stellato con la sagoma di un palazzo a balconi sulla destra, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/07.webp",
+      "filePiccola": "/assets/img/fotografia/ben/07-1024.webp",
+      "width": 1600,
+      "height": 1057,
+      "widthPiccola": 1024,
+      "heightPiccola": 676,
+      "sorgente": {
+        "file": "foto_20241231_0007.jpg",
+        "width": 3414,
+        "height": 2256
+      },
+      "alt": "Una fascia bianca di luce a sinistra e, a destra, il bordo di una carrozzina davanti a un edificio, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/08.webp",
+      "filePiccola": "/assets/img/fotografia/ben/08-1024.webp",
+      "width": 1600,
+      "height": 1050,
+      "widthPiccola": 1024,
+      "heightPiccola": 672,
+      "sorgente": {
+        "file": "foto_20241231_0008.jpg",
+        "width": 3418,
+        "height": 2244
+      },
+      "alt": "Una carrozzina vista dall'alto con un neonato che dorme tra le coperte, su un marciapiede a lastre, in bianco e nero",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/ben/09.webp",
+      "filePiccola": "/assets/img/fotografia/ben/09-1024.webp",
+      "width": 1600,
+      "height": 1044,
+      "widthPiccola": 1024,
+      "heightPiccola": 668,
+      "sorgente": {
+        "file": "foto_20241231_0009.jpg",
+        "width": 3426,
+        "height": 2236
+      },
+      "alt": "Una carrozzina vista dall'alto con un neonato tra le coperte, in bianco e nero",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/ben/10.webp",
+      "filePiccola": "/assets/img/fotografia/ben/10-1024.webp",
+      "width": 1600,
+      "height": 1042,
+      "widthPiccola": 1024,
+      "heightPiccola": 667,
+      "sorgente": {
+        "file": "foto_20241231_0010.jpg",
+        "width": 3434,
+        "height": 2236
+      },
+      "alt": "Un parco giochi con uno scivolo di legno, palazzi e montagne sullo sfondo, in controluce, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/11.webp",
+      "filePiccola": "/assets/img/fotografia/ben/11-1024.webp",
+      "width": 1600,
+      "height": 1055,
+      "widthPiccola": 1024,
+      "heightPiccola": 675,
+      "sorgente": {
+        "file": "foto_20241231_0011.jpg",
+        "width": 3408,
+        "height": 2247
+      },
+      "alt": "Un porticato buio con una persona seduta e un'apertura luminosa in fondo, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/12.webp",
+      "filePiccola": "/assets/img/fotografia/ben/12-1024.webp",
+      "width": 1600,
+      "height": 1053,
+      "widthPiccola": 1024,
+      "heightPiccola": 674,
+      "sorgente": {
+        "file": "foto_20241231_0012.jpg",
+        "width": 3408,
+        "height": 2242
+      },
+      "alt": "Un pupazzo a forma di pecora accanto a un neonato con il ciuccio, in bianco e nero",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/ben/13.webp",
+      "filePiccola": "/assets/img/fotografia/ben/13-1024.webp",
+      "width": 1067,
+      "height": 1600,
+      "widthPiccola": 683,
+      "heightPiccola": 1024,
+      "sorgente": {
+        "file": "foto_20241231_0013.jpg",
+        "width": 3408,
+        "height": 2272
+      },
+      "alt": "Una scia di luce bianca aggrovigliata su fondo nero, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/14.webp",
+      "filePiccola": "/assets/img/fotografia/ben/14-1024.webp",
+      "width": 1600,
+      "height": 1059,
+      "widthPiccola": 1024,
+      "heightPiccola": 678,
+      "sorgente": {
+        "file": "foto_20241231_0014.jpg",
+        "width": 3408,
+        "height": 2255
+      },
+      "alt": "Un primo piano mosso e sfocato di un volto in penombra, in bianco e nero",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/ben/15.webp",
+      "filePiccola": "/assets/img/fotografia/ben/15-1024.webp",
+      "width": 1600,
+      "height": 1057,
+      "widthPiccola": 1024,
+      "heightPiccola": 676,
+      "sorgente": {
+        "file": "foto_20241231_0015.jpg",
+        "width": 3408,
+        "height": 2251
+      },
+      "alt": "La sagoma di una persona con il cappuccio davanti a una fascia luminosa, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/16.webp",
+      "filePiccola": "/assets/img/fotografia/ben/16-1024.webp",
+      "width": 1062,
+      "height": 1600,
+      "widthPiccola": 680,
+      "heightPiccola": 1024,
+      "sorgente": {
+        "file": "foto_20241231_0016.jpg",
+        "width": 3404,
+        "height": 2259
+      },
+      "alt": "Palazzi in controluce visti dal basso, con un ramo di pino in alto, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/17.webp",
+      "filePiccola": "/assets/img/fotografia/ben/17-1024.webp",
+      "width": 1057,
+      "height": 1600,
+      "widthPiccola": 676,
+      "heightPiccola": 1024,
+      "sorgente": {
+        "file": "foto_20241231_0017.jpg",
+        "width": 3408,
+        "height": 2251
+      },
+      "alt": "Una riva scoscesa coperta di sterpi, di notte, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/18.webp",
+      "filePiccola": "/assets/img/fotografia/ben/18-1024.webp",
+      "width": 1087,
+      "height": 1600,
+      "widthPiccola": 696,
+      "heightPiccola": 1024,
+      "sorgente": {
+        "file": "foto_20241231_0018.jpg",
+        "width": 3314,
+        "height": 2251
+      },
+      "alt": "Un fiume con alberi spogli sulla riva e le montagne sullo sfondo, al crepuscolo, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/19.webp",
+      "filePiccola": "/assets/img/fotografia/ben/19-1024.webp",
+      "width": 1600,
+      "height": 1050,
+      "widthPiccola": 1024,
+      "heightPiccola": 672,
+      "sorgente": {
+        "file": "foto_20241231_0019.jpg",
+        "width": 3429,
+        "height": 2250
+      },
+      "alt": "Il profilo scuro di case e colline sotto un cielo notturno, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/20.webp",
+      "filePiccola": "/assets/img/fotografia/ben/20-1024.webp",
+      "width": 1600,
+      "height": 1057,
+      "widthPiccola": 1024,
+      "heightPiccola": 676,
+      "sorgente": {
+        "file": "foto_20241231_0020.jpg",
+        "width": 3408,
+        "height": 2251
+      },
+      "alt": "Un neonato in tutina guarda verso l'obiettivo, su fondo nero, in bianco e nero",
+      "volti": true
+    },
+    {
+      "file": "/assets/img/fotografia/ben/21.webp",
+      "filePiccola": "/assets/img/fotografia/ben/21-1024.webp",
+      "width": 1600,
+      "height": 1054,
+      "widthPiccola": 1024,
+      "heightPiccola": 675,
+      "sorgente": {
+        "file": "foto_20241231_0021.jpg",
+        "width": 3418,
+        "height": 2251
+      },
+      "alt": "Una persona accanto a una carrozzina davanti a un muro con una cancellata, di notte, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/22.webp",
+      "filePiccola": "/assets/img/fotografia/ben/22-1024.webp",
+      "width": 1600,
+      "height": 1054,
+      "widthPiccola": 1024,
+      "heightPiccola": 675,
+      "sorgente": {
+        "file": "foto_20241231_0022.jpg",
+        "width": 3405,
+        "height": 2243
+      },
+      "alt": "Una carrozzina con la capote chiara vista dall'alto, mossa, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/23.webp",
+      "filePiccola": "/assets/img/fotografia/ben/23-1024.webp",
+      "width": 1600,
+      "height": 1061,
+      "widthPiccola": 1024,
+      "heightPiccola": 679,
+      "sorgente": {
+        "file": "foto_20241231_0023.jpg",
+        "width": 3408,
+        "height": 2259
+      },
+      "alt": "Due persone di spalle attraversano una strada verso le strisce pedonali, in bianco e nero",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/fotografia/ben/24.webp",
+      "filePiccola": "/assets/img/fotografia/ben/24-1024.webp",
+      "width": 1600,
+      "height": 1100,
+      "widthPiccola": 1024,
+      "heightPiccola": 704,
+      "sorgente": {
+        "file": "foto_20241231_0024.jpg",
+        "width": 3279,
+        "height": 2255
+      },
+      "alt": "Un neonato seduto con una felpa e un bavaglino, in penombra, in bianco e nero",
+      "volti": true
+    }
+  ]
+}

@@ -1,11 +1,12 @@
 import { z } from 'zod'
-import { Artista, Edizione, Mostra, Opera, Polittico, Serie, type Slug } from './schema.ts'
+import { Artista, Edizione, Mostra, Opera, Polittico, RullinoDati, Serie, type Slug } from './schema.ts'
 import { artista as artistaRaw } from './artista.ts'
 import { opere as opereRaw } from './opere.ts'
 import { polittici as politticiRaw } from './polittici.ts'
 import { serie as serieRaw } from './serie.ts'
 import { edizioni as edizioniRaw } from './edizioni.ts'
 import { mostre as mostreRaw } from './mostre.ts'
+import { rullini as rulliniRaw } from './rullini.ts'
 
 /** Tutti i dati passano da zod una volta sola, all'import: un dato rotto fa fallire la build, non la pagina. */
 export const artista = Artista.parse(artistaRaw)
@@ -13,6 +14,7 @@ export const opere = z.array(Opera).parse(opereRaw)
 export const polittici = z.array(Polittico).parse(politticiRaw)
 export const serie = z.array(Serie).parse(serieRaw).sort((a, b) => (a.ordine ?? 99) - (b.ordine ?? 99))
 export const edizioni = z.array(Edizione).parse(edizioniRaw)
+export const rullini = z.array(RullinoDati).parse(rulliniRaw)
 export const mostre = z.array(Mostra).parse(mostreRaw).sort((a, b) => b.anno - a.anno)
 
 export const opereById = new Map(opere.map((o) => [o.id, o]))

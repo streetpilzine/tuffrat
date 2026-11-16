@@ -2,7 +2,7 @@
  * Route → scena → target camera (ARCHITECTURE §5 e §6).
  * Unità mondo e zone del muro in `src/three/mondo.ts`. La camera guarda sempre `look`.
  */
-import { ZONA } from '../three/mondo.ts'
+import { frontaleTv, RITRATTO, TV, ZONA } from '../three/mondo.ts'
 
 export type Scena = 'muro' | 'banco' | 'bio'
 
@@ -12,7 +12,7 @@ export interface CameraTarget {
   /**
    * Se presente, la distanza dal muro si calcola nel Canvas perché un rettangolo w×h (unità mondo)
    * centrato su `look` riempia la quota `riempi` del viewport, qualunque sia il rapporto d'aspetto.
-   * `pos[2]` resta il valore di ripiego (desktop 16:9).
+   * `pos[2]` resta il valore di ripiego (desktop 16:9). La camera si mette lungo la direzione `look → pos`, quindi un target può guardare un piano non parallelo al muro (lo schermo della TV).
    */
   inquadra?: { w: number; h: number; riempi?: number }
   /** Durata del tween in secondi (default `DURATA_CAMERA_S`). */
@@ -46,6 +46,31 @@ const BIO = frontale((ZONA.bio + ZONA.tv) / 2, 1.0, 6.2, { w: 3.8, h: 3.4, riemp
 const EDIZIONI: CameraTarget = { pos: [-0.9, 1.7, 4.7], look: [-0.9, -0.5, 2.25] }
 const FOTOGRAFIA: CameraTarget = { pos: [1.35, 0.75, 4.2], look: [1.35, -0.5, 2.3] }
 const LONTANO: CameraTarget = { pos: [0, 3.5, 11], look: [0, 1, 0] }
+
+/**
+ * Ritratto girato sul retro: la camera si mette di fronte alla cornice venuta avanti. Su uno schermo stretto vincola la larghezza e la cornice lo riempie quasi tutto (96 %), perché il testo si legga; su uno schermo largo vincola l'altezza, gonfiata del 20 % per lasciare liberi la barra in alto e i comandi in basso.
+ */
+export const TARGET_BIO_RETRO: CameraTarget = {
+  pos: [RITRATTO.x, RITRATTO.y, RITRATTO.zPrimoPiano + 3],
+  look: [RITRATTO.x, RITRATTO.y, RITRATTO.zPrimoPiano],
+  inquadra: { w: RITRATTO.largo + RITRATTO.bordo, h: (RITRATTO.alto + RITRATTO.bordo) * 1.2, riempi: 0.96 },
+  durata: DURATA_FUOCO_S,
+}
+
+/**
+ * Video nella TV: la camera sta sulla normale del frontale (la TV è girata di qualche grado), così l'iframe non è in scorcio. L'inquadratura va dal bordo sinistro dello schermo al pulsante di accensione a destra, e in altezza prende tutto il corpo.
+ */
+export const TARGET_TV: CameraTarget = (() => {
+  const sinistra = TV.schermo.x - TV.schermo.w / 2 - 0.04
+  const destra = TV.pulsante.x + TV.pulsante.r + 0.04
+  const { punto, normale } = frontaleTv((sinistra + destra) / 2, 0)
+  return {
+    pos: [punto[0] + normale[0] * 2, punto[1], punto[2] + normale[2] * 2],
+    look: punto,
+    inquadra: { w: destra - sinistra, h: TV.corpo.h * 1.15, riempi: 0.94 },
+    durata: DURATA_FUOCO_S,
+  }
+})()
 
 const pulisci = (p: string) => (p.split('?')[0].replace(/\/+$/, '') || '/')
 

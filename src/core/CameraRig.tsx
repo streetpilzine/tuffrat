@@ -5,7 +5,8 @@ import { EASE_TUFFRAT, gsap } from './motion/ease'
 import { presa } from './gesto'
 import { pan } from './pan'
 import { naviga, percorsoDiRitorno } from './ponte'
-import { DURATA_CAMERA_S, type CameraTarget } from './scene-map'
+import { DURATA_CAMERA_S, TARGET_BIO_RETRO, TARGET_TV, type CameraTarget } from './scene-map'
+import { useOggetti, type PrimoPiano } from '../state/useOggetti'
 import { useScene } from '../state/useScene'
 import { MURO } from '../three/mondo'
 
@@ -19,8 +20,16 @@ function posizionePer(t: CameraTarget, fovGradi: number, aspetto: number): [numb
   const riempi = t.inquadra.riempi ?? 0.7
   // Su schermi stretti non ci si allontana oltre DISTANZA_MAX: si vede una parte del soggetto e il resto si scorre.
   const d = Math.min(DISTANZA_MAX, Math.max(t.inquadra.h / (2 * tan), t.inquadra.w / (2 * tan * aspetto)) / riempi)
-  return [t.pos[0], t.pos[1], t.look[2] + d]
+  // Lungo la direzione look → pos: per i target frontali è l'asse z, per la TV è la normale dello schermo.
+  const dx = t.pos[0] - t.look[0]
+  const dy = t.pos[1] - t.look[1]
+  const dz = t.pos[2] - t.look[2]
+  const n = Math.hypot(dx, dy, dz) || 1
+  return [t.look[0] + (dx / n) * d, t.look[1] + (dy / n) * d, t.look[2] + (dz / n) * d]
 }
+
+/** Target della camera per l'oggetto in primo piano; il rullino non ne ha: la striscia si mette davanti alla camera dov'è. */
+const targetPrimoPiano = (p: PrimoPiano | null): CameraTarget | null => (p?.tipo === 'bio' ? TARGET_BIO_RETRO : p?.tipo === 'tv' ? TARGET_TV : null)
 
 /**
  * Porta la camera sul target della scena corrente con una timeline GSAP (≤ 800 ms) e gestisce lo
@@ -32,7 +41,10 @@ export function CameraRig() {
   const invalidate = useThree((s) => s.invalidate)
   const gl = useThree((s) => s.gl)
   const aspetto = useThree((s) => (s.size.width > 0 && s.size.height > 0 ? s.size.width / s.size.height : 16 / 9))
-  const target = useScene((s) => s.target)
+  const targetScena = useScene((s) => s.target)
+  const primoPiano = useOggetti((s) => s.primoPiano)
+  // Un oggetto in primo piano (ritratto girato, TV) porta la camera su di sé; tolto, si torna al target della pagina.
+  const target = targetPrimoPiano(primoPiano) ?? targetScena
   const rig = useRef({ pos: new Vector3(...target.pos), look: new Vector3(...target.look) })
   const primo = useRef(true)
 
@@ -84,8 +96,16 @@ export function CameraRig() {
       gsap.killTweensOf(pan)
       Object.assign(g, { attivo: true, id: e.pointerId, x: e.clientX, y: e.clientY, mosso: 0, vx: 0, t: performance.now() })
     }
+    /** Con un oggetto in primo piano il muro non scorre: la striscia del rullino ha i suoi gesti, ritratto e TV si chiudono con un click sullo sfondo. */
+    const bloccato = () => useOggetti.getState().primoPiano
+    let chiusura = { id: -1, x: 0, y: 0 }
     const onDown = (e: PointerEvent) => {
       if (e.target !== el || e.button !== 0 || presa.attiva || g.attivo) return
+      const p = bloccato()
+      if (p) {
+        if (p.tipo !== 'rullino') chiusura = { id: e.pointerId, x: e.clientX, y: e.clientY }
+        return
+      }
       avvia(e)
     }
     const onMove = (e: PointerEvent) => {
@@ -104,6 +124,11 @@ export function CameraRig() {
     }
     const onUp = (e: PointerEvent) => {
       presa.attiva = false
+      if (e.pointerId === chiusura.id) {
+        const fermo = Math.hypot(e.clientX - chiusura.x, e.clientY - chiusura.y) < 6
+        chiusura = { id: -1, x: 0, y: 0 }
+        if (fermo && e.type === 'pointerup' && e.target === el && bloccato()) useOggetti.getState().setPrimoPiano(null)
+      }
       if (!g.attivo || e.pointerId !== g.id) return
       g.attivo = false
       if (g.mosso < 6) {
@@ -126,6 +151,8 @@ export function CameraRig() {
     }
     const onWheel = (e: WheelEvent) => {
       e.preventDefault()
+      // Con un rullino aperto la rotella scorre e ingrandisce la striscia (la ascolta il Rullino); con ritratto o TV non fa nulla.
+      if (bloccato()) return
       gsap.killTweensOf(pan)
       const k = perPixel()
       if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) pan.x += (e.deltaX || e.deltaY) * k
@@ -133,7 +160,9 @@ export function CameraRig() {
       limita()
       invalidate()
     }
-    presa.avviaPan = avvia
+    presa.avviaPan = (e) => {
+      if (!bloccato()) avvia(e)
+    }
     window.addEventListener('pointerdown', onDown)
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)

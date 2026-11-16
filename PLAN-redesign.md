@@ -19,9 +19,9 @@ Decisioni già prese che il piano incorpora (non si ridiscutono):
 - Modello di lavoro: claude-fable-5-2 (chiude il dubbio «Fable 2.5» del Q/A).
 - Stack: Vite + React + TypeScript, SPA statica; Three/R3F/drei solo dove guadagna; GSAP unica libreria DOM; niente Framer Motion, niente Lenis in v1; fisica solo se serve (rapier), altrimenti spring e drag.
 - react-router con URL reali e prerender dei meta in build.
-- V1 = fasi 0, 1, 2 + fanzine apribili. Fotografia, TV PULSOS e bacheca mostre in v2.
+- V1 = fasi 0, 1, 2 + fanzine apribili (aggiornato 16/11: anche rullini «gialla» e «ben», bio con retro e TV con video entrano in v1, vedi docs/decisioni.md). Bacheca mostre con flyer e IG in v2.
 - Bustine di tè = polittico piatto (modello dati «gruppo con N pannelli»).
-- Selezione automatica zine StreetPIL: esclude `pr0n` e le cartelle dei contributori (`gab`, `favola`, `sk8`, `special`, `megafoto`). Restano `1-verde`, `2-rossa`, `3-blu`, `4-rave`, `graffiti`, `malli`.
+- Selezione automatica zine StreetPIL: esclude `pr0n` e le cartelle dei contributori (`gab`, `favola`, `sk8`, `special`, `megafoto`). Restano `1-verde`, `2-rossa`, `3-blu`, `4-rave`. Aggiornamento 16/11: `graffiti` e `malli` NON si usano.
 - Tessere Roundabout da `..\fotuzze\serie-02_Roundabout\` (4 JPG quadrati ~5800 px + 2 dettagli).
 - Anteprime Netlify pubbliche, senza password. Netlify pubblica da `main`: lavoro su `redesign`, test in localhost.
 - Skill elayadesign: copia autorizzata in `.claude/skills/` (parte visiva di landing-page-design con valori TuffRat; redesign-skill solo per l'audit del sito statico).
@@ -120,7 +120,7 @@ Ordine di taglio se la fase sfora (si rimanda alla v1.1, non si rompe il resto):
 ### Fase 3a — Fanzine (→ 18/12; selezione in parallelo dal 29/11)
 
 Lavoro:
-- `tools/streetpil_select.py`: legge `D:\ANALOGIC_DREAM\malli\StreetPIL\`, applica le esclusioni, produce 4 zine (una per numero: verde, rossa, blu, rave). Ogni zine = le 5 foto del numero + immagini da `graffiti` e `malli` fino a 16–20 pagine, scelte con criteri espliciti (nitidezza, varietà di soggetto, preferenza per immagini senza volti riconoscibili). Output: `public/assets/img/edizioni/<slug>/pages/NN.webp` ≤ 1600 px + `manifest.json` con i file sorgente per la curatela v2.
+- `tools/streetpil_select.py`: legge `D:\ANALOGIC_DREAM\malli\StreetPIL\`, applica le esclusioni, produce 4 zine (una per numero: verde, rossa, blu, rave). Ogni zine = le 5 foto del numero (aggiornamento 16/11: niente `graffiti` né `malli`; le pagine extra sono solo copertina, titolo e colophon generati). Output: `public/assets/img/edizioni/<slug>/pages/NN.webp` ≤ 1600 px + `manifest.json` con i file sorgente per la curatela v2.
 - `Shelf` (R3F o DOM 2.5D, decido in base al costo nel momento): dorsi sullo scaffale; click → la fanzine vola e si apre; `FlipBook` React che incapsula `page-flip` (logica di `flipbook.js` attuale); chiusura → si richiude e torna a posto.
 - `edizioni.ts` popolato dal manifest.
 

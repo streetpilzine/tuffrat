@@ -1,0 +1,106 @@
+{
+  "slug": "streetpil-verde",
+  "numero": 1,
+  "titolo": "Muschio",
+  "colore": "#2f6f4f",
+  "coloreTesto": "#f7f7f5",
+  "cartellaSorgente": "1-verde",
+  "font": "Manrope (variable, pesi Regular/Bold)",
+  "pagine": [
+    {
+      "file": "/assets/img/edizioni/streetpil-verde/pages/01.webp",
+      "tipo": "copertina",
+      "width": 1500,
+      "height": 1000,
+      "alt": "Copertina di StreetPIL n. 1, Muschio",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-verde/pages/02.webp",
+      "tipo": "titolo",
+      "width": 1500,
+      "height": 1000
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-verde/pages/03.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "1-verde",
+        "file": "001064160001.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Superficie giallo verde con una fascia chiara lungo il bordo destro, cosparsa di bolle rosa della pellicola",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-verde/pages/04.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "1-verde",
+        "file": "001064160004.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Due campiture verdi divise da una linea obliqua, con un piccolo oggetto scuro al centro, sotto bolle rosa",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-verde/pages/05.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "1-verde",
+        "file": "001064160005 (2).jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Un sottopasso di cemento visto di fronte, con l'apertura scura al centro, sotto bolle rosa",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-verde/pages/06.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "1-verde",
+        "file": "001064160006.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Terreno con sassi e detriti ai piedi di un muro, in toni verdi, sotto bolle rosa",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-verde/pages/07.webp",
+      "tipo": "foto",
+      "width": 1536,
+      "height": 1024,
+      "sorgente": {
+        "cartella": "1-verde",
+        "file": "001064160015.jpg",
+        "width": 1545,
+        "height": 1024
+      },
+      "alt": "Una persona con la maglia a righe piegata in avanti con la testa tra le mani, accanto a un pannello chiaro, in toni gialli e verdi",
+      "volti": false
+    },
+    {
+      "file": "/assets/img/edizioni/streetpil-verde/pages/08.webp",
+      "tipo": "colophon",
+      "width": 1500,
+      "height": 1000
+    }
+  ],
+  "copertina": {
+    "file": "/assets/img/edizioni/streetpil-verde/cover.webp",
+    "width": 1500,
+    "height": 1000
+  }
+}

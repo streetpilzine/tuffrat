@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { rullini } from '../data'
 import { edizioniVisibili } from '../lib/edizioni'
-import { useScene } from '../state/useScene'
 import { Libro } from '../three/Libro'
 import { BANCO } from '../three/mondo'
 import { Rullino } from '../three/Rullino'
@@ -8,22 +7,22 @@ import { Rullino } from '../three/Rullino'
 const SPESSORE = 0.08
 const GAMBA = BANCO.y - SPESSORE + 1.5
 
-/** In v1 non ci sono ancora collezioni fotografiche: tre rullini segnaposto, tutti «in arrivo». */
-const rullini = [
-  { id: 'rullino-1', etichetta: 'in arrivo', colore: '#d9a520', x: 1.05, z: 2.2, giro: 0.5 },
-  { id: 'rullino-2', etichetta: 'in arrivo', colore: '#2f6f4f', x: 1.5, z: 2.5, giro: -0.9 },
-  { id: 'rullino-3', etichetta: 'in arrivo', colore: '#3a3a3a', x: 1.85, z: 2.05, giro: 2.2 },
+/** Dove stanno i rullini nella metà destra del banco, nell'ordine dei dati (gialla, ben). */
+const POSTI_RULLINI = [
+  { x: 1.1, z: 2.2, giro: 0.5 },
+  { x: 1.65, z: 2.45, giro: -0.9 },
 ]
 
-/** Finché non ci sono fanzine vere, due copertine mute tengono il posto sullo scaffale. */
-function Segnaposto({ x, z, giro, colore }: { x: number; z: number; giro: number; colore: string }) {
-  return (
-    <mesh position={[x, BANCO.y + 0.011, z]} rotation={[0, giro, 0]}>
-      <boxGeometry args={[0.42, 0.022, 0.594]} />
-      <meshStandardMaterial color={colore} roughness={0.8} />
-    </mesh>
-  )
-}
+/**
+ * Posti delle fanzine nella metà sinistra del banco: una griglia 2 × 2 appena disordinata, nell'ordine di lettura (n. 1 e n. 2 nella fila lontana, che a schermo sta in alto; n. 3 e n. 4 in quella vicina). Le StreetPIL sono orizzontali, larghe 0,594 e profonde 0,396: così nessuna copre un'altra e il bordo destro resta a x ≈ −0,28, lontano dagli attrezzi. Il quinto posto, a sinistra, serve alla rivista di prova in dev.
+ */
+const POSTI_LIBRI = [
+  { x: -1.22, z: 1.93, giro: 0.04 },
+  { x: -0.58, z: 1.96, giro: -0.03 },
+  { x: -1.21, z: 2.5, giro: -0.03 },
+  { x: -0.59, z: 2.47, giro: 0.05 },
+  { x: -1.9, z: 2.25, giro: 0.1 },
+]
 
 /** Bomboletta e pennarello: attrezzi di scena, non interattivi. */
 function Attrezzi() {
@@ -58,18 +57,11 @@ function Attrezzi() {
 }
 
 /**
- * Il banco davanti al muro: a sinistra le fanzine (`/edizioni`), a destra i rullini (`/fotografia`).
- * Fanzine e rullini sono oggetti che si prendono; il tavolo fa da sfondo e lascia passare lo scorrimento.
+ * Il banco davanti al muro: a sinistra le fanzine (`/edizioni`), a destra i due rullini (`/fotografia`).
+ * Fanzine e rullini sono oggetti che si prendono; il tavolo fa da sfondo e lascia passare lo scorrimento. Quale rullino è srotolato lo dice `useOggetti` (un solo oggetto in primo piano alla volta).
  */
 export function Banco() {
-  const suFotografia = useScene((s) => s.percorso === '/fotografia')
-  const [aperto, setAperto] = useState<string | null>(null)
-  // Uscendo da Fotografia il rullino in mano torna sul banco (stato derivato dalla route, aggiornato in render).
-  if (!suFotografia && aperto !== null) setAperto(null)
-
   const gambe: [number, number][] = [-1, 1].flatMap((sx) => [-1, 1].map((sz): [number, number] => [sx * (BANCO.largo / 2 - 0.15), BANCO.z + sz * (BANCO.profondo / 2 - 0.12)]))
-  const passo = 0.56
-  const x0 = -0.9 - ((edizioniVisibili.length - 1) * passo) / 2
 
   return (
     <group>
@@ -83,17 +75,12 @@ export function Banco() {
           <meshStandardMaterial color="#3a3733" roughness={0.7} />
         </mesh>
       ))}
-      {edizioniVisibili.length === 0 ? (
-        <>
-          <Segnaposto x={-1.2} z={2.15} giro={0.12} colore="#2d6a4f" />
-          <Segnaposto x={-0.6} z={2.35} giro={-0.2} colore="#b23a3a" />
-        </>
-      ) : (
-        edizioniVisibili.map((e, i) => <Libro key={e.id} edizione={e} x={x0 + i * passo} z={2.25 + (i % 2) * 0.12} giro={i % 2 ? -0.16 : 0.1} />)
-      )}
+      {edizioniVisibili.slice(0, POSTI_LIBRI.length).map((e, i) => (
+        <Libro key={e.id} edizione={e} {...POSTI_LIBRI[i]} />
+      ))}
       <Attrezzi />
-      {rullini.map((r) => (
-        <Rullino key={r.id} {...r} aperto={aperto === r.id} onApri={setAperto} />
+      {rullini.slice(0, POSTI_RULLINI.length).map((r, i) => (
+        <Rullino key={r.id} dati={r} {...POSTI_RULLINI[i]} />
       ))}
     </group>
   )

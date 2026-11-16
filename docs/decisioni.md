@@ -54,3 +54,31 @@ Rullini, bacheca delle mostre e TV erano in v2. Sono stati anticipati in forma m
 ## 2026-11-16 — Rivista di prova solo in dev
 
 Per provare scaffale e sfogliatore prima della selezione StreetPIL si usa un PDF qualsiasi reso con `tools/fanzine_to_pages.py`. L'edizione sta in `src/dev/rivista-test.ts` dietro `import.meta.env.DEV`, le immagini in una cartella ignorata da git: non entra né nella build né nel prerender.
+
+## 2026-11-16 — Fase 3 riscopata: fanzine, rullini veri, bio con retro, TV con video
+
+Gabriele ha chiuso le scelte aperte della fase 3 e le ha ampliate; tutto rientra nella v1. Sorgenti StreetPIL ammesse: solo `1-verde`, `2-rossa`, `3-blu`, `4-rave`. Escluse `graffiti` e `malli` (oltre a `pr0n`, `gab`, `favola`, `sk8`, `special`, `megafoto`): ogni zine è quindi fatta con le sole 5 foto del suo numero, più eventuali ritagli o pagine tipografiche generate (titolo, colophon), non con foto prese da altre cartelle.
+
+Titoli e dorsi scelti da Claude, modificabili in `src/data/edizioni.ts`: n.1 «Muschio» (verde, dorso #2f6f4f), n.2 «Ruggine» (rossa, #a8322b), n.3 «Cianotipo» (blu, #1f4a8a), n.4 «Acido» (rave, nero con scritta fluo #e0309a). L'anno non è noto: va lasciato vuoto, non inventato.
+
+Rullini: sostituiscono i fotogrammi vuoti «in arrivo». Rullino «gialla» = le 28 foto di `D:\ANALOGIC_DREAM\malli\StreetPIL\gialla\` (ritratti ~560×880 px). Rullino «ben» = le 24 scansioni di `D:\ANALOGIC_DREAM\bEn_ultimoAnno\` (3408×2263 px, escludere la sottocartella `postprocess`). Le foto vanno ruotate di 45° a destra e messe in fila al posto dei fotogrammi vuoti, in un'unica striscia continua che si scorre. Con il pinch (due dita) e con ctrl+rotella la striscia si ingrandisce. Il terzo segnaposto «in arrivo» (verde e grigio) si toglie: restano due rullini.
+
+Bio: click sul ritratto → la cornice va in primo piano e si gira mostrando il retro, dove si legge il testo della bio. Secondo click (o Esc) la riporta a posto. Il testo della bio resta anche nella vista lista e nella scheda.
+
+TV: il video YouTube PULSOS (`ngi81Oa-Jtc`) sta dentro lo schermo; il click sullo schermo lo avvia (niente nuova scheda). Il pulsante in basso a destra della TV la spegne (video fermo, schermo nero). L'iframe si carica solo al primo click, con `youtube-nocookie.com`, per privacy e prestazioni.
+
+## 2026-11-16 — Fase 3 implementata: contratti e scelte
+
+Rotazione dei rullini: Gabriele ha visto la prova (45°, 90°, nessuna) e ha scelto 90° in senso orario per «gialla» e nessuna rotazione per «ben», così tutti i fotogrammi risultano orizzontali. I file WebP restano diritti; la rotazione è un numero nel manifest e in `src/data/rullini.ts`, applicato dal componente.
+
+Fanzine orizzontali: tutte le 20 foto dei quattro numeri sono 3:2 orizzontali, quindi le pagine sono 3:2 (8 per numero: copertina, titolo, 5 foto, colophon) e `Libro` prende il formato dalla copertina. `Edizione.anno` diventa facoltativo e si aggiungono `numero`, `dorso` e `altPagine`.
+
+Un solo oggetto in primo piano: `src/state/useOggetti.ts` tiene un campo esclusivo `primoPiano` (rullino srotolato, ritratto girato, TV con il video) più lo stato della TV. Esc, click sullo sfondo e cambio di pagina lo azzerano; con un oggetto in primo piano il muro non scorre. Ritratto e TV hanno un target camera proprio (`TARGET_BIO_RETRO`, `TARGET_TV`, quest'ultimo sulla normale del frontale); il rullino no, perché la striscia si posa davanti alla camera dov'è, perpendicolare all'asse di vista.
+
+Striscia: la matematica (layout, limiti di zoom in pixel veri, scorrimento) sta nel modulo puro `src/core/striscia.ts`; l'Hud comanda la striscia attraverso `comandaStriscia`, come `ponte.ts`.
+
+Retro della bio: `CanvasTexture` con la bio breve (la completa non starebbe leggibile a 390 px), non drei `Html`.
+
+Video nella TV: drei `Html transform` montato in `#stage-html`, un contenitore fratello dello Stage (che è `aria-hidden`) con il suo contesto di impilamento sotto Nav, Hud e scheda; niente `occlude`. L'iframe esiste solo nello stato `video` e alla chiusura il player viene distrutto. Costo: il chunk three passa da 248 a 314 kB gzip.
+
+Stato della verifica: nessuna prova in Chrome riuscita il 16/11 (vedi `docs/qa/fase-3.md`); push del branch `redesign` chiesto da Gabriele per provare sulla preview Netlify.

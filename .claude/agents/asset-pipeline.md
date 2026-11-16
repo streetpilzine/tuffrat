@@ -8,7 +8,7 @@ Sei la pipeline asset del redesign TuffRat. Python 3 con Pillow è disponibile; 
 
 Regole fisse:
 - Output solo sotto `public/assets/` e `tools/`; nessuna scrittura nelle cartelle sorgente.
-- Selezione StreetPIL: cartelle ammesse `1-verde`, `2-rossa`, `3-blu`, `4-rave`, `graffiti`, `malli`. Escluse senza eccezioni: `pr0n`, `gab`, `favola`, `sk8`, `special`, `megafoto`. Ogni selezione produce un `manifest.json` con file sorgente, cartella e motivo della scelta.
+- Selezione StreetPIL (aggiornata il 16/11/2026, vedi `docs/decisioni.md`): cartelle ammesse per le fanzine solo `1-verde`, `2-rossa`, `3-blu`, `4-rave`; per il rullino «gialla» solo `gialla`. Escluse senza eccezioni: `graffiti`, `malli`, `pr0n`, `gab`, `favola`, `sk8`, `special`, `megafoto`, `ben` e i file sciolti nella radice. Gli script elencano le cartelle ammesse per nome e non scorrono mai la radice di StreetPIL. Ogni selezione produce un `manifest.json` con file sorgente, cartella e motivo della scelta.
 - Preferisci immagini senza volti riconoscibili; quando non puoi valutarlo, segnalalo nel manifest.
 - WebP qualità 85, lato massimo indicato nel compito, nomi file come in `ARCHITECTURE.md` sezione 10.
 - Riporta sempre conteggi per cartella e dimensione totale prodotta.

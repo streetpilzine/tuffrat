@@ -87,17 +87,49 @@ export const Serie = z.object({
 })
 export type Serie = z.infer<typeof Serie>
 
+const Colore = z.string().regex(/^#[0-9a-f]{6}$/, 'colore esadecimale minuscolo')
+
 export const Edizione = z.object({
   id: Slug,
   titolo: z.string().min(1),
-  anno: z.number().int(),
+  /** Numero della testata (StreetPIL n. 1…). */
+  numero: z.number().int().positive().optional(),
+  /** Assente quando non è noto: non si inventa (decisione del 16/11/2026). */
+  anno: z.number().int().optional(),
   tipo: z.literal('fanzine'),
   descrizione: z.string().optional(),
   copertina: Immagine,
+  /** Colore del dorso e della scritta sul dorso, per la fanzine sul banco. */
+  dorso: z.object({ colore: Colore, testo: Colore }).optional(),
   pagine: z.array(z.string().startsWith('/assets/')).min(1),
+  /** Testo alternativo per pagina, stesso ordine di `pagine`: lo usa l'elenco accessibile delle pagine. */
+  altPagine: z.array(z.string().min(1)).optional(),
   fonte: z.string().optional(),
 })
 export type Edizione = z.infer<typeof Edizione>
+
+/** Una fotografia di un rullino: file diritto (non ruotato), con la variante piccola per mobile e per la striscia a riposo. */
+export const Fotogramma = z.object({
+  src: z.string().startsWith('/assets/'),
+  srcPiccola: z.string().startsWith('/assets/'),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  alt: z.string().min(1),
+})
+export type Fotogramma = z.infer<typeof Fotogramma>
+
+/** Rullino fotografico sul banco: una striscia continua di fotogrammi. */
+export const RullinoDati = z.object({
+  id: Slug,
+  /** Scritta a pennarello sullo scotch. */
+  etichetta: z.string().min(1),
+  colore: Colore,
+  /** Gradi in senso orario con cui ogni foto è posata sulla striscia; i file restano diritti. */
+  rotazione: z.number().int().min(0).max(359),
+  foto: z.array(Fotogramma).min(1),
+  fonte: z.string().optional(),
+})
+export type RullinoDati = z.infer<typeof RullinoDati>
 
 export const Mostra = z.object({
   id: Slug,

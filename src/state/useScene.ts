@@ -5,6 +5,7 @@ import { leggiRoundabout, type StatoRoundabout } from '../core/roundabout.ts'
 import { tutteLeOpereById } from '../data/index.ts'
 import { SCALA } from '../three/mondo.ts'
 import { posaDi } from './useLayout.ts'
+import { useOggetti } from './useOggetti.ts'
 
 export interface SceneState {
   scena: Scena
@@ -64,7 +65,11 @@ export const useScene = create<SceneState>()((set, get) => ({
     if (hash) nuovo.schedaAperta = true
     // Stessa pagina (cambia solo la query, es. Roundabout): la camera e la scheda restano dove sono.
     if (nuovo.percorso === prima.percorso) set(hash ? { roundabout: nuovo.roundabout, schedaAperta: true } : { roundabout: nuovo.roundabout })
-    else set(nuovo)
+    else {
+      // Cambio di pagina: rullino, ritratto e TV tornano a posto (il video si ferma).
+      useOggetti.getState().azzera()
+      set(nuovo)
+    }
   },
   setScheda: (schedaAperta) => set({ schedaAperta }),
   setInTransizione: (v) => set({ inTransizione: v }),

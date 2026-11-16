@@ -24,3 +24,29 @@ export const BANCO = { y: -0.56, z: 2.2, largo: 4.6, profondo: 1.5 }
 
 /** Passo della griglia di riaggancio dei quadri (12,5 cm). */
 export const PASSO_GRIGLIA = 0.25
+
+/**
+ * TV accanto al ritratto: posa del gruppo (rotazione attorno alla verticale), corpo, piano dello schermo e pulsante di accensione nel sistema locale del corpo. Lo schermo misura 0,72 × 0,54 (4:3), così l'iframe del video non si deforma. Il pulsante sta in basso a destra sul frontale, sotto le due manopole.
+ */
+export const TV = {
+  x: ZONA.tv,
+  z: 0.55,
+  giro: -0.18,
+  mobileAlto: 1.1,
+  corpo: { w: 1.05, h: 0.86, d: 0.8 },
+  schermo: { x: -0.12, y: 0.02, w: 0.72, h: 0.54 },
+  manopole: { x: 0.39, y: [0.2, 0.02], r: 0.055 },
+  pulsante: { x: 0.39, y: -0.27, r: 0.05 },
+}
+
+/** Un punto del frontale della TV (coordinate locali del corpo) in coordinate mondo, con la normale del frontale: servono al target della camera quando il video è in primo piano. */
+export function frontaleTv(lx: number, ly: number): { punto: [number, number, number]; normale: [number, number, number] } {
+  const c = Math.cos(TV.giro)
+  const s = Math.sin(TV.giro)
+  const lz = TV.corpo.d / 2
+  const y = MURO.pavimento + TV.mobileAlto + TV.corpo.h / 2 + ly
+  return { punto: [TV.x + lx * c + lz * s, y, TV.z - lx * s + lz * c], normale: [s, 0, c] }
+}
+
+/** Ritratto sul muro della bio: centro a riposo, misure della foto (1060 × 1600) e del bordo della cornice, distanza dal muro quando viene in primo piano e si gira per mostrare il retro. */
+export const RITRATTO = { x: ZONA.bio, y: 1.5, largo: 1.3, alto: (1.3 * 1600) / 1060, bordo: 0.06, zPrimoPiano: 0.9 }
