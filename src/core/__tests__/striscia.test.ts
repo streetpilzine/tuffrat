@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { alCentro, altezzaRuotata, centraSu, layoutStriscia, limita, limitiZoom, rapportoRuotato, scorri, scorrimentoMax, visibili, zooma } from '../striscia.ts'
+import { alCentro, altezzaRuotata, centraSu, CODA_RULLINO, FORMATO_35MM, latiFoto, layoutStriscia, limita, limitiZoom, posaRullino, rapportoRuotato, scorri, scorrimentoMax, visibili, zooma } from '../striscia.ts'
 
 const finestra = { largo: 1200, alto: 700 }
 
@@ -62,5 +62,49 @@ describe('striscia del rullino', () => {
     expect(v[0]).toBeLessThanOrEqual(5)
     expect(v[1]).toBeGreaterThanOrEqual(5)
     expect(visibili(s, l, finestra, 1)![0]).toBe(Math.max(0, v[0] - 1))
+  })
+})
+
+describe('rullino aperto', () => {
+  it('su un telefono in verticale bussolotto e striscia stanno dentro lo schermo, tra la barra e i comandi', () => {
+    const p = posaRullino(390, 844, true)
+    // Il bussolotto è a filo del bordo sinistro e la striscia prende quasi tutta la larghezza.
+    expect(p.asse).toBeGreaterThan(0)
+    expect(p.asse).toBeLessThan(60)
+    expect(p.asse + p.finestra.largo).toBe(390)
+    // La fascia libera: sotto la barra di navigazione, sopra la riga dei pulsanti e la maniglia.
+    expect(p.centro - p.finestra.alto / 2).toBeGreaterThanOrEqual(90)
+    expect(p.centro + p.finestra.alto / 2).toBeLessThanOrEqual(844 - 140)
+    // Allo zoom minimo la pellicola (larga 35/24 di fotogramma) sta tutta nella fascia.
+    const z = limitiZoom(p.finestra, 560)
+    expect(z.min * FORMATO_35MM.pellicola).toBeLessThan(p.finestra.alto)
+  })
+
+  it('su un telefono in orizzontale la fascia resta utile', () => {
+    const p = posaRullino(844, 390, true)
+    expect(p.finestra.alto).toBeGreaterThan(200)
+    expect(p.centro).toBeGreaterThan(150)
+    expect(p.centro).toBeLessThan(240)
+  })
+
+  it('su desktop il bussolotto si vede intero allo zoom di apertura', () => {
+    const p = posaRullino(1440, 900, false)
+    const z = limitiZoom(p.finestra, 1062)
+    expect(p.asse - z.min * FORMATO_35MM.bussolottoRaggio).toBeGreaterThan(0)
+    expect(p.asse + p.finestra.largo).toBe(1440)
+  })
+
+  it('a inizio corsa il primo fotogramma sta fuori dal bussolotto', () => {
+    const l = layoutStriscia([1.5, 1.5], 0.06, CODA_RULLINO)
+    expect(l.inizio[0]).toBeGreaterThan(FORMATO_35MM.bussolottoRaggio)
+  })
+
+  it('una foto girata di un quarto di giro occupa la sua cella', () => {
+    // File verticale 564 × 851 posato a 90°: la cella è larga 851/564, il piano prima della rotazione è alto quanto la cella è larga.
+    const largo = rapportoRuotato(564, 851, 90)
+    expect(latiFoto(largo, 90)).toEqual({ w: 1, h: largo })
+    expect(latiFoto(largo, 270)).toEqual({ w: 1, h: largo })
+    expect(latiFoto(1.5, 0)).toEqual({ w: 1.5, h: 1 })
+    expect(latiFoto(1.5, 180)).toEqual({ w: 1.5, h: 1 })
   })
 })

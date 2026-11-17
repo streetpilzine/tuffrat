@@ -3,6 +3,7 @@ import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SRGBColorSpace, TextureLoader, type Group } from 'three'
 import type { Edizione } from '../data'
 import { useGesto } from '../core/gesto'
+import { eMobile } from '../core/mobile'
 import { EASE_TUFFRAT, gsap } from '../core/motion/ease'
 import { naviga } from '../core/ponte'
 import { useScene } from '../state/useScene'
@@ -71,7 +72,11 @@ export function Libro({ edizione, x, z, giro = 0 }: Props) {
   const gesto = useGesto({
     cursore: 'hand',
     onHover: setSopra,
-    onClick: () => naviga(aperto ? '/edizioni' : `/edizioni/${edizione.id}`),
+    onClick: () => {
+      // Telefono: dal muro le fanzine sono troppo piccole per sceglierne una. Il primo tocco porta sul banco, da lì un tocco la apre.
+      if (eMobile() && !useScene.getState().percorso.startsWith('/edizioni')) naviga('/edizioni')
+      else naviga(aperto ? '/edizioni' : `/edizioni/${edizione.id}`)
+    },
   })
 
   return (

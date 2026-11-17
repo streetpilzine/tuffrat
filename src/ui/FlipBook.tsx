@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import type { PageFlip } from 'page-flip'
+import { useMobile } from '../core/mobile'
 import { usePrefs } from '../state/usePrefs'
 import { descriviPagine, misureSfogliatore } from './logica/sfogliatore'
+import { SfogliatoreMobile } from './SfogliatoreMobile'
 
 interface Props {
   pagine: string[]
@@ -53,6 +55,8 @@ const cssPagine = `
  * visibile (o la doppia pagina) a ogni cambio, ed è l'unico annuncio (il contatore non è `aria-live`).
  * Il focus resta dentro il dialogo e, alla chiusura, torna all'elemento che ha aperto la fanzine.
  * `page-flip` si scarica solo all'apertura.
+ * Su mobile (`useMobile`) il libro è `SfogliatoreMobile`: una pagina per volta, sempre in orizzontale, col foglio
+ * che segue il dito; qui restano le parti comuni (portale, dialog, Esc, focus, ritorno alla pagina).
  */
 export function FlipBook({ pagine, altPagine = [], titolo, proporzione = 210 / 297, larghezza, altezza, ingresso = 0, origine, tornoAlMioPosto, onClose }: Props) {
   const libro = useRef<HTMLDivElement>(null)
@@ -63,13 +67,15 @@ export function FlipBook({ pagine, altPagine = [], titolo, proporzione = 210 / 2
   const [pronto, setPronto] = useState(false)
   const [doppia, setDoppia] = useState(true)
   const reducedMotion = usePrefs((s) => s.reducedMotion)
+  const mobile = useMobile()
   /** Lo sfoglio consuma le frecce solo dopo che le si è usate davvero: da lì la tabulazione entra nella barra. */
   const frecceUsate = useRef(false)
 
   useEffect(() => {
     let vivo = true
     const contenitore = libro.current
-    if (!contenitore) return
+    // Su mobile lo sfoglio è `SfogliatoreMobile` (il portale sotto non monta nemmeno il contenitore di page-flip).
+    if (!contenitore || mobile) return
     // page-flip sostituisce il nodo che riceve: gli si dà un figlio usa e getta, così React non perde il suo.
     const nodo = document.createElement('div')
     contenitore.appendChild(nodo)
@@ -125,7 +131,7 @@ export function FlipBook({ pagine, altPagine = [], titolo, proporzione = 210 / 2
       flip.current = null
       contenitore.replaceChildren()
     }
-  }, [pagine, proporzione, larghezza, altezza, reducedMotion])
+  }, [mobile, pagine, proporzione, larghezza, altezza, reducedMotion])
 
   const origineRef = useRef(origine)
   const postoRef = useRef(tornoAlMioPosto)
@@ -202,6 +208,22 @@ export function FlipBook({ pagine, altPagine = [], titolo, proporzione = 210 / 2
   const descrizione = descriviPagine(pagine.length, mostra, doppia, altPagine)
 
   // In portale su body: la scheda che ospita la pagina è `inert` da chiusa e ha un transform (romperebbe `position: fixed`).
+  if (mobile) {
+    return createPortal(
+      <div className="flipbook-overlay is-open sfoglia-overlay" role="dialog" aria-modal="true" aria-label={`Sfoglia ${titolo}`}>
+        <SfogliatoreMobile
+          pagine={pagine}
+          altPagine={altPagine}
+          titolo={titolo}
+          proporzione={proporzione}
+          ridottoMovimento={reducedMotion}
+          chiudiRef={chiudi}
+          onClose={chiudiOra}
+        />
+      </div>,
+      document.body,
+    )
+  }
   return createPortal(
     <div className="flipbook-overlay is-open" role="dialog" aria-modal="true" aria-label={`Sfoglia ${titolo}`}>
       <div className="flipbook__backdrop" onClick={() => chiudiOra()} />

@@ -103,7 +103,8 @@ export function BioWall() {
         {/* Il retro guarda verso −z: con la cornice girata di 180° è la faccia verso la camera, e il testo non risulta specchiato. */}
         <mesh position={[0, 0, -SPESSORE / 2 - 0.002]} rotation={[0, Math.PI, 0]}>
           <planeGeometry args={[LARGO, ALTO]} />
-          {retro ? <meshBasicMaterial map={retro} toneMapped={false} /> : <meshBasicMaterial color="#f7f7f5" toneMapped={false} />}
+          {/* Chiavi diverse: un materiale nato senza `map` non la campiona se gliela si aggiunge dopo (lo shader è già compilato senza), e il retro restava vuoto. Con la chiave React ne crea uno nuovo per ogni texture. */}
+          {retro ? <meshBasicMaterial key={retro.uuid} map={retro} toneMapped={false} /> : <meshBasicMaterial key="vuoto" color="#f7f7f5" toneMapped={false} />}
         </mesh>
       </group>
     </>

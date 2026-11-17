@@ -120,3 +120,38 @@ export const registraStriscia = (fn: ((c: ComandoStriscia) => void) | null) => {
   ascoltatore = fn
 }
 export const comandaStriscia = (c: ComandoStriscia) => ascoltatore?.(c)
+
+/* --- Rullino aperto: dove stanno bussolotto e pellicola sullo schermo (pixel CSS del canvas) --- */
+
+/** Proporzioni del 35 mm in altezze di fotogramma (24 mm): larghezza della pellicola (35 mm), passo delle perforazioni (4,75 mm), altezza e raggio del bussolotto (47 e 12,7 mm). */
+export const FORMATO_35MM = { pellicola: 35 / 24, passo: 4.75 / 24, bussolottoAlto: 47 / 24, bussolottoRaggio: 12.7 / 24 }
+
+/** Coda vuota in testa e in fondo alla striscia di un rullino: a inizio corsa il primo fotogramma deve stare tutto fuori dal bussolotto, il cui raggio copre la pellicola a destra dell'asse. */
+export const CODA_RULLINO = FORMATO_35MM.bussolottoRaggio + 0.22
+
+export interface PosaRullino {
+  /** Ascissa dell'asse del bussolotto: l'inizio della striscia sta qui e la pellicola si vede da qui verso destra. */
+  asse: number
+  /** Ordinata del centro del bussolotto e della pellicola. */
+  centro: number
+  /** Area in cui scorre la striscia: dall'asse al bordo destro, alta quanto la fascia libera. */
+  finestra: Finestra
+}
+
+/**
+ * Rullino aperto: bussolotto a sinistra e pellicola che attraversa lo schermo verso destra, al centro della fascia libera tra la barra di navigazione in alto e i comandi in basso (sul telefono la riga dei pulsanti sopra la maniglia della scheda). Tutto dalla misura vera del canvas: su un telefono in verticale il bussolotto sta a filo del bordo sinistro, mezzo fuori, e la striscia prende quasi tutta la larghezza; su desktop il bussolotto si vede intero.
+ */
+export function posaRullino(largo: number, alto: number, mobile: boolean): PosaRullino {
+  const basso = alto < 500
+  const sopra = mobile ? (basso ? 60 : 96) : 80
+  const sotto = mobile ? (basso ? 64 : 148) : 120
+  const fascia = Math.max(120, alto - sopra - sotto)
+  const asse = mobile ? 8 : clamp(largo * 0.14, 120, 240)
+  return { asse, centro: sopra + fascia / 2, finestra: { largo: Math.max(1, largo - asse), alto: fascia } }
+}
+
+/** Lati (in altezze di fotogramma) del piano di una foto prima della rotazione: girato di `gradi`, occupa la cella larga `largo` e alta 1. */
+export function latiFoto(largo: number, gradi: number): { w: number; h: number } {
+  const quarto = ((Math.round(gradi / 90) % 4) + 4) % 4
+  return quarto % 2 === 1 ? { w: 1, h: largo } : { w: largo, h: 1 }
+}

@@ -1,5 +1,6 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useLocation } from 'react-router'
+import { useMobile } from '../core/mobile'
 import { percorsoDiRitorno } from '../core/ponte'
 import { ROUNDABOUT_DEFAULT, ugualeRoundabout } from '../core/roundabout'
 import { comandaStriscia } from '../core/striscia'
@@ -8,9 +9,14 @@ import { useLayout } from '../state/useLayout'
 import { useOggetti } from '../state/useOggetti'
 import { useScene } from '../state/useScene'
 
+/** Telefono: dopo quanto il suggerimento se ne va da solo. */
+const DURATA_SUGGERIMENTO_MS = 4200
+
 /**
  * Barra di contesto del modo 3D: dice cosa si può fare nella scena e ospita le azioni che non hanno
  * un oggetto 3D (ripristina, torna al muro, copia link). Sparisce quando la scheda è aperta.
+ * Su telefono il testo è un suggerimento in alto, sotto la Nav, che va via da solo (o al primo tocco sul palco):
+ * in basso resta solo la riga dei pulsanti, così banco, fanzine e rullini si vedono e si toccano.
  */
 export function Hud() {
   const { pathname } = useLocation()
@@ -25,7 +31,25 @@ export function Hud() {
   const tv = useOggetti((s) => s.tv)
   const setPrimoPiano = useOggetti((s) => s.setPrimoPiano)
   const interruttoreTv = useOggetti((s) => s.interruttoreTv)
+  const mobile = useMobile()
   const [copiato, setCopiato] = useState(false)
+
+  // Telefono: il suggerimento torna a ogni pagina e a ogni cambio di stato della scena, e se ne va dopo qualche secondo o al primo tocco sul palco. Resta nel DOM (solo trasparente), così gli screen reader lo leggono.
+  const statoScena = `${percorso}|${primoPiano ? `${primoPiano.tipo}${primoPiano.tipo === 'rullino' ? `:${primoPiano.id}` : ''}` : ''}|${tv}`
+  const [scadutoPer, setScadutoPer] = useState<string | null>(null)
+  const scaduto = mobile && scadutoPer === statoScena
+  useEffect(() => {
+    if (!mobile) return
+    const id = window.setTimeout(() => setScadutoPer(statoScena), DURATA_SUGGERIMENTO_MS)
+    const onDown = (e: PointerEvent) => {
+      if (e.target instanceof Element && e.target.closest('.stage')) setScadutoPer(statoScena)
+    }
+    window.addEventListener('pointerdown', onDown, true)
+    return () => {
+      window.clearTimeout(id)
+      window.removeEventListener('pointerdown', onDown, true)
+    }
+  }, [mobile, statoScena])
 
   const copia = () => {
     void navigator.clipboard?.writeText(window.location.href).then(() => {
@@ -42,7 +66,7 @@ export function Hud() {
     testo = (
       <>
         <strong>{opera.titolo}</strong>, {opera.anno}
-        {fuoco ? '. Muovi il puntatore per spostare la luce.' : ''}
+        {fuoco ? (mobile ? '. Inclina il telefono per spostare la luce.' : '. Muovi il puntatore per spostare la luce.') : ''}
       </>
     )
     azioni = (
@@ -73,14 +97,17 @@ export function Hud() {
             Ripristina
           </Link>
         )}
-        <button type="button" className="hud__btn" onClick={copia}>
-          {copiato ? 'Link copiato' : 'Copia link'}
-        </button>
+        {!mobile && (
+          <button type="button" className="hud__btn" onClick={copia}>
+            {copiato ? 'Link copiato' : 'Copia link'}
+          </button>
+        )}
       </>
     )
   } else if (percorso === '/serie/bustine-di-te') {
-    testo = 'Pannelli piatti, da vedere affiancati. L’ordine si cambia dalla scheda.'
-    azioni = (
+    // L'ordine dei polittici è fisso: su telefono la scheda non riordina, quindi niente pulsante e niente invito.
+    testo = mobile ? 'Pannelli piatti, da vedere affiancati.' : 'Pannelli piatti, da vedere affiancati. L’ordine si cambia dalla scheda.'
+    azioni = !mobile && (
       <button type="button" className="hud__btn" onClick={() => setScheda(true)}>
         Riordina
       </button>
@@ -165,7 +192,7 @@ export function Hud() {
   if (!testo) return null
   return (
     <div className={`hud${schedaAperta ? ' is-nascosto' : ''}`} inert={schedaAperta}>
-      <p className="hud__testo">{testo}</p>
+      <p className={`hud__testo${scaduto ? ' is-via' : ''}`}>{testo}</p>
       {azioni && <div className="hud__azioni">{azioni}</div>}
     </div>
   )

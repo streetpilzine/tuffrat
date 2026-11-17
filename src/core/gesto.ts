@@ -9,6 +9,10 @@ import { useCursor, type CursorKind } from '../state/useCursor'
 export const presa = {
   attiva: false,
   avviaPan: null as null | ((e: PointerEvent) => void),
+  /** Pinch a due dita sul muro, in corso o appena finito con un dito ancora giù (lo scrive il CameraRig, solo sul telefono): finché vale, gli oggetti ignorano i puntatori, così il rilascio delle dita non diventa un click. */
+  pinch: false,
+  /** Annulla il gesto dell'oggetto che ha il puntatore, senza click né riaggancio a metà: lo chiama il CameraRig quando arriva il secondo dito. */
+  annulla: null as null | (() => void),
 }
 
 const SOGLIA_PX = 6
@@ -49,10 +53,20 @@ export function useGesto(o: Opzioni) {
     onPointerDown: (e: Evento) => {
       if (e.button !== 0) return
       e.stopPropagation()
+      if (presa.pinch) return
       presa.attiva = true
       st.current = { ...st.current, giu: true, drag: false, x: e.clientX, y: e.clientY, t: performance.now() }
       const el = e.target as unknown as { setPointerCapture?: (id: number) => void }
       el.setPointerCapture?.(e.pointerId)
+      presa.annulla = () => {
+        const s = st.current
+        if (s.drag) o.onDragEnd?.(e)
+        s.giu = false
+        s.drag = false
+        rilascia(e)
+        presa.attiva = false
+        setTre(null)
+      }
     },
     onPointerMove: (e: Evento) => {
       const s = st.current
@@ -80,6 +94,7 @@ export function useGesto(o: Opzioni) {
       if (!s.giu) return
       e.stopPropagation()
       s.giu = false
+      presa.annulla = null
       rilascia(e)
       if (s.drag) o.onDragEnd?.(e)
       else o.onClick?.(e)
@@ -88,6 +103,7 @@ export function useGesto(o: Opzioni) {
     },
     onPointerCancel: (e: Evento) => {
       const s = st.current
+      if (s.giu) presa.annulla = null
       if (s.drag) o.onDragEnd?.(e)
       s.giu = false
       s.drag = false

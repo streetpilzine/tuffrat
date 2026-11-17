@@ -1,5 +1,5 @@
 import { SRGBColorSpace, TextureLoader, type Texture } from 'three'
-import { alCentro, altezzaRuotata, centraSu, layoutStriscia, limitiZoom, limita, rapportoRuotato, scorri, visibili, zooma, type Finestra, type LayoutStriscia, type LimitiZoom } from '../core/striscia.ts'
+import { alCentro, altezzaRuotata, centraSu, CODA_RULLINO, layoutStriscia, limitiZoom, limita, rapportoRuotato, scorri, visibili, zooma, type Finestra, type LayoutStriscia, type LimitiZoom } from '../core/striscia.ts'
 import type { Fotogramma, RullinoDati } from '../data'
 
 /** Fotogrammi caricati attorno alla finestra: oltre questo margine la foto torna al suo posto e la texture si libera. */
@@ -21,7 +21,7 @@ export interface Geometria {
 
 export function geometria(D: RullinoDati): Geometria {
   const rapporti = D.foto.map((f) => rapportoRuotato(f.width, f.height, D.rotazione))
-  const layout = layoutStriscia(rapporti)
+  const layout = layoutStriscia(rapporti, 0.06, CODA_RULLINO)
   return {
     layout,
     posate: layout.inizio.map((inizio, indice) => ({ indice, inizio, largo: layout.largo[indice] })),

@@ -1,22 +1,41 @@
 import { Link, useParams } from 'react-router'
+import { useMobile } from '../core/mobile'
 import { serieById, statoLabel, tutteLeOpereById } from '../data'
 import { misureLabel, tecnicaCompleta } from '../lib/format'
+import { ImmagineZoom } from '../ui/ImmagineZoom'
 import { NotFound } from './NotFound'
 
 export function OperaDetail() {
   const { slug = '' } = useParams()
+  // Su telefono l'immagine e i dettagli si ingrandiscono dentro il loro riquadro (la scheda e la pagina restano ferme).
+  const mobile = useMobile()
   const o = tutteLeOpereById.get(slug)
   if (!o) return <NotFound />
   const s = o.serie ? serieById.get(o.serie) : undefined
   return (
-    <article className="opera">
+    <article className={`opera${mobile ? ' opera--mobile' : ''}`}>
       <div className="opera__img">
-        <img src={o.immagine.src} alt={o.immagine.alt} width={o.immagine.width} height={o.immagine.height} />
+        {mobile ? (
+          <ImmagineZoom
+            src={o.immagine.src}
+            alt={o.immagine.alt}
+            width={o.immagine.width}
+            height={o.immagine.height}
+            // L'immagine è la pagina: si carica subito, così nella scheda si vede intera appena aperta.
+            loading="eager"
+          />
+        ) : (
+          <img src={o.immagine.src} alt={o.immagine.alt} width={o.immagine.width} height={o.immagine.height} />
+        )}
         {o.dettagli && (
           <div className="opera__dettagli">
-            {o.dettagli.map((d) => (
-              <img key={d.src} src={d.src} alt={d.alt} width={d.width} height={d.height} loading="lazy" />
-            ))}
+            {o.dettagli.map((d) =>
+              mobile ? (
+                <ImmagineZoom key={d.src} src={d.src} alt={d.alt} width={d.width} height={d.height} loading="lazy" />
+              ) : (
+                <img key={d.src} src={d.src} alt={d.alt} width={d.width} height={d.height} loading="lazy" />
+              ),
+            )}
           </div>
         )}
       </div>

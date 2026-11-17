@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate, useNavigationType } from 'react-router'
 import { useOggetti } from '../state/useOggetti'
 import { useScene } from '../state/useScene'
 import { percorsoDiRitorno, registraNavigate } from './ponte'
@@ -12,10 +12,13 @@ import { percorsoDiRitorno, registraNavigate } from './ponte'
 export function SceneRouter() {
   const { pathname, search, hash } = useLocation()
   const navigate = useNavigate()
+  const tipo = useNavigationType()
   const vaiA = useScene((s) => s.vaiA)
 
   useEffect(() => {
-    vaiA(pathname, search, hash)
+    vaiA(pathname, search, hash, tipo === 'POP')
+    // Il tipo di navigazione accompagna il cambio di indirizzo: da solo non è un cambio di pagina.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, search, hash, vaiA])
 
   useEffect(() => {

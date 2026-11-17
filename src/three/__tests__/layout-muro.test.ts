@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { opereInHome, polittici } from '../../data/index.ts'
-import { agganciaAllaGriglia, disponiPolittico, disponiSulMuro, SCALA } from '../layout-muro.ts'
+import { agganciaAllaGriglia, BOARD, BUSTINE_DESKTOP, BUSTINE_MOBILE, disponiPolittico, disponiSulMuro, ingombroColonna, SCALA } from '../layout-muro.ts'
 import { MURO, PASSO_GRIGLIA, ZONA } from '../mondo.ts'
 
 describe('disponiSulMuro', () => {
@@ -65,5 +65,38 @@ describe('agganciaAllaGriglia', () => {
     expect(agganciaAllaGriglia(1.13)).toBeCloseTo(1.25, 6)
     expect(agganciaAllaGriglia(-0.4)).toBeCloseTo(-0.5, 6)
     expect(Math.abs(agganciaAllaGriglia(3.33) / PASSO_GRIGLIA - Math.round(agganciaAllaGriglia(3.33) / PASSO_GRIGLIA))).toBeLessThan(1e-9)
+  })
+})
+
+describe('colonna del telefono: i polittici sopra Roundabout', () => {
+  it('ogni polittico sta sopra il board, centrato su di lui, senza toccare gli altri né il soffitto', () => {
+    const posti = polittici.map((p, riga) => disponiPolittico(p, p.ordineDefault, riga, BUSTINE_MOBILE))
+    const bordi = posti.map((riga) => ({
+      sinistra: Math.min(...riga.map((x) => x.x - (x.opera.misure.w * SCALA) / 2)),
+      destra: Math.max(...riga.map((x) => x.x + (x.opera.misure.w * SCALA) / 2)),
+      giu: Math.min(...riga.map((x) => x.y - (x.opera.misure.h * SCALA) / 2)),
+      su: Math.max(...riga.map((x) => x.y + (x.opera.misure.h * SCALA) / 2)),
+    }))
+    for (const b of bordi) expect((b.sinistra + b.destra) / 2).toBeCloseTo(ZONA.roundabout)
+    // Dal basso: board, ultimo polittico, primo polittico, con parete in mezzo.
+    const cimaBoard = BOARD.y + BOARD.lato / 2
+    expect(bordi[1].giu - cimaBoard).toBeGreaterThan(0.2)
+    expect(bordi[0].giu - bordi[1].su).toBeGreaterThan(0.2)
+    expect(bordi[0].su).toBeLessThan(MURO.yCentro + MURO.alto / 2 - 0.5)
+  })
+
+  it('l’ingombro della colonna va dalla base del board alla cima del polittico più alto', () => {
+    const tutta = ingombroColonna(true)
+    const te = ingombroColonna(false)
+    expect(tutta.y - tutta.h / 2).toBeCloseTo(BOARD.y - BOARD.lato / 2)
+    expect(tutta.y + tutta.h / 2).toBeCloseTo(te.y + te.h / 2)
+    expect(te.h).toBeLessThan(tutta.h)
+    expect(tutta.w).toBeGreaterThanOrEqual(BOARD.lato)
+  })
+
+  it('sul desktop la zona resta quella a sinistra di Roundabout', () => {
+    const p = polittici[0]
+    expect(disponiPolittico(p, p.ordineDefault, 0)).toEqual(disponiPolittico(p, p.ordineDefault, 0, BUSTINE_DESKTOP))
+    expect(BUSTINE_DESKTOP.centro).toBe(ZONA.bustine)
   })
 })

@@ -1,5 +1,6 @@
-import { NavLink } from 'react-router'
-import { artista } from '../data'
+import { NavLink, useLocation } from 'react-router'
+import { artista, opereInHome } from '../data'
+import { useMobile } from '../core/mobile'
 import { usePrefs } from '../state/usePrefs'
 
 const voci = [
@@ -10,9 +11,17 @@ const voci = [
   { to: '/bio', label: 'Bio' },
 ]
 
-/** Navigazione principale con l'interruttore «vista lista» (ARCHITECTURE §5 e §7). */
+const home = new Set(opereInHome.map((o) => `/opere/${o.id}`))
+
+/**
+ * Navigazione principale con l'interruttore «vista lista» (ARCHITECTURE §5 e §7). Solo su telefono la prima
+ * voce è «Studio», il muro della home: senza, le altre opere si raggiungevano solo passando da una serie.
+ */
 export function Nav() {
   const { vistaLista, reducedMotion, webgl, toggleVistaLista } = usePrefs()
+  const mobile = useMobile()
+  const { pathname } = useLocation()
+  const percorso = pathname.replace(/\/+$/, '') || '/'
   const bloccata = !webgl || reducedMotion
   const motivo = !webgl
     ? 'La vista 3D non è disponibile su questo dispositivo'
@@ -27,6 +36,13 @@ export function Nav() {
         {artista.brand}
       </NavLink>
       <ul className="nav__links">
+        {mobile && (
+          <li>
+            <NavLink to="/" end aria-current={percorso === '/' || home.has(percorso) ? 'page' : undefined}>
+              Studio
+            </NavLink>
+          </li>
+        )}
         {voci.map((v) => (
           <li key={v.to}>
             <NavLink to={v.to}>{v.label}</NavLink>

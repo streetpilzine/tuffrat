@@ -1,21 +1,35 @@
-import { Html } from '@react-three/drei'
+import { Html, RoundedBox } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { CanvasTexture, SRGBColorSpace, type Mesh, type MeshStandardMaterial } from 'three'
 import { useGesto } from '../core/gesto'
+import { eMobile } from '../core/mobile'
 import { EASE_TUFFRAT, gsap } from '../core/motion/ease'
 import { naviga } from '../core/ponte'
 import { artista } from '../data'
+import { PERMESSI_VIDEO, urlVideoYouTube } from '../lib/youtube'
 import { useOggetti } from '../state/useOggetti'
 import { useScene } from '../state/useScene'
 import { MURO, TV } from './mondo'
-import { caricaApiYouTube } from './youtube'
 
 const { corpo: CORPO, schermo: SCHERMO } = TV
 /** Manopole e pulsante di accensione stanno a destra dello schermo, sul frontale: le posizioni vengono da `mondo.ts`, che le usa anche per l'inquadratura di `TARGET_TV`. */
 const { manopole: MANOPOLE, pulsante: PULSANTE } = TV
 const FACCIA = CORPO.d / 2
 const SCHERMO_Z = FACCIA + 0.002
+
+/** Listelli della cornice in rilievo attorno allo schermo (scostamento dal centro dello schermo, larghezza, altezza). */
+const BORDO = 0.035
+const CORNICE_SCHERMO = [
+  { id: 'su', x: 0, y: SCHERMO.h / 2 + BORDO / 2, w: SCHERMO.w + BORDO * 2, h: BORDO },
+  { id: 'giu', x: 0, y: -SCHERMO.h / 2 - BORDO / 2, w: SCHERMO.w + BORDO * 2, h: BORDO },
+  { id: 'sx', x: -SCHERMO.w / 2 - BORDO / 2, y: 0, w: BORDO, h: SCHERMO.h },
+  { id: 'dx', x: SCHERMO.w / 2 + BORDO / 2, y: 0, w: BORDO, h: SCHERMO.h },
+]
+/** Quote delle feritoie della griglia dell'altoparlante, sotto le manopole. */
+const GRIGLIA = [-0.075, -0.097, -0.119, -0.141, -0.163]
+/** Piedini sotto la scocca (x, z). */
+const PIEDINI: [number, number][] = [-1, 1].flatMap((sx) => [-1, 1].map((sz): [number, number] => [sx * (CORPO.w / 2 - 0.1), sz * (CORPO.d / 2 - 0.1)]))
 
 /** Misure del player YouTube in pixel CSS: 640 × 480, 4:3 come lo schermo. */
 const PLAYER = { w: 640, h: 480 }
@@ -77,55 +91,17 @@ function portaStage(): RefObject<HTMLElement | null> {
 }
 
 /**
- * Il player YouTube vero e proprio. Montato solo con `tv === 'video'`, smontato in ogni altro stato; allo smontaggio (pulsante di spegnimento, Esc, click sullo sfondo, cambio pagina, che passano tutti da `useOggetti`) il player è distrutto con `destroy()` e il nodo rimosso, così l'audio si ferma davvero. Gestisce anche lo stato che cambia prima che l'API abbia finito di caricare.
+ * Il video dentro lo schermo (desktop): l'iframe di YouTube agganciato al piano dello schermo con `Html transform` di drei. Montato solo con `tv === 'video'`: quando lo stato cambia (pulsante di spegnimento, Esc, click sullo sfondo, cambio pagina, che passano tutti da `useOggetti`) l'iframe si smonta e l'audio si ferma.
+ * Un iframe semplice, senza l'API di YouTube: prima il player lo creava un effetto che leggeva un `ref` dentro `Html`, ma `Html` monta i figli in una sua radice React, dopo l'effetto, e il `ref` era sempre vuoto: il video non partiva mai.
+ * Sul telefono questo componente non si monta: il video sta in un riquadro DOM sopra la scena (`src/ui/TvVideo.tsx`), più grande e senza trasformazioni 3D, che sui browser mobili sono fragili per un iframe.
  */
-function VideoNelloSchermo({ youtubeId }: { youtubeId: string }) {
+function VideoNelloSchermo({ youtubeId, titolo }: { youtubeId: string; titolo: string }) {
   const invalidate = useThree((s) => s.invalidate)
-  const host = useRef<HTMLDivElement>(null)
-  const [errore, setErrore] = useState(false)
-  const [montato, setMontato] = useState(false)
 
-  // `Html` si riposiziona solo quando si disegna un frame (`frameloop="demand"`): al montaggio e a ogni cambio di stato se ne chiede uno.
+  // `Html` si riposiziona solo quando si disegna un frame (`frameloop="demand"`): al montaggio se ne chiede uno.
   useEffect(() => {
     invalidate()
-  }, [invalidate, errore])
-
-  useEffect(() => {
-    const el = host.current
-    if (!el) return
-    let vivo = true
-    let player: PlayerYT | null = null
-    void caricaApiYouTube()
-      .then((YT) => {
-        if (!vivo || !el.isConnected) return
-        setMontato(true)
-        player = new YT.Player(el, {
-          host: 'https://www.youtube-nocookie.com',
-          videoId: youtubeId,
-          width: PLAYER.w,
-          height: PLAYER.h,
-          playerVars: { autoplay: 1, playsinline: 1, rel: 0 },
-          events: {
-            onReady: (e) => {
-              e.target.playVideo()
-              if (errore) setErrore(false)
-            },
-          },
-        })
-        invalidate()
-      })
-      .catch(() => {
-        // API irraggiungibile: la TV torna in neve (lo stato è esclusivo, il primo piano si toglie).
-        if (vivo) useOggetti.getState().setPrimoPiano(null)
-      })
-    return () => {
-      vivo = false
-      setMontato(false)
-      // L'API sostituisce il div con il suo iframe: il player va distrutto anche se il nodo originale è sparito; il resto lo toglie React.
-      player?.destroy()
-      player = null
-    }
-  }, [youtubeId, invalidate, errore])
+  }, [invalidate])
 
   const porta = portaStage()
   return (
@@ -138,22 +114,15 @@ function VideoNelloSchermo({ youtubeId }: { youtubeId: string }) {
       position={[SCHERMO.x, SCHERMO.y, SCHERMO_Z + 0.004]}
       style={{ width: PLAYER.w, height: PLAYER.h, pointerEvents: 'auto', background: '#000' }}
     >
-      <div ref={host} />
-      {montato && !errore ? null : (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'grid',
-            placeItems: 'center',
-            color: '#f2f2ea',
-            font: '600 20px "Helvetica Neue", Arial, sans-serif',
-            background: errore ? '#000' : 'transparent',
-          }}
-        >
-          {errore ? 'Video non disponibile' : null}
-        </div>
-      )}
+      <iframe
+        src={urlVideoYouTube(youtubeId)}
+        title={titolo}
+        width={PLAYER.w}
+        height={PLAYER.h}
+        allow={PERMESSI_VIDEO}
+        allowFullScreen
+        style={{ display: 'block', border: 0 }}
+      />
     </Html>
   )
 }
@@ -244,21 +213,49 @@ export function Tv({ anteprimaVideo = false }: TvProps) {
   const vista = stato === 'video' ? 'video' : stato
   return (
     <group position={[TV.x, 0, TV.z]} rotation={[0, TV.giro, 0]}>
-      <mesh position={[0, yMobile, 0]}>
-        <boxGeometry args={[1.25, TV.mobileAlto, 0.85]} />
+      {/* Mobiletto: cassa con gli spigoli smussati, un piano che sporge appena e lo zoccolo rientrato. */}
+      <RoundedBox args={[1.25, TV.mobileAlto - 0.1, 0.85]} radius={0.02} smoothness={3} position={[0, yMobile + 0.03, 0]}>
         <meshStandardMaterial color="#6b5a47" roughness={0.85} />
+      </RoundedBox>
+      <RoundedBox args={[1.31, 0.04, 0.9]} radius={0.012} smoothness={3} position={[0, MURO.pavimento + TV.mobileAlto - 0.02, 0]}>
+        <meshStandardMaterial color="#7a6852" roughness={0.8} />
+      </RoundedBox>
+      <mesh position={[0, MURO.pavimento + 0.04, -0.02]}>
+        <boxGeometry args={[1.15, 0.08, 0.75]} />
+        <meshStandardMaterial color="#3d3329" roughness={0.9} />
       </mesh>
       <group position={[0, yTv, 0]}>
-        <mesh>
-          <boxGeometry args={[CORPO.w, CORPO.h, CORPO.d]} />
-          <meshStandardMaterial color="#2b2a28" roughness={0.6} />
-        </mesh>
+        {/* Scocca con gli spigoli arrotondati, come le TV a tubo catodico. */}
+        <RoundedBox args={[CORPO.w, CORPO.h, CORPO.d]} radius={0.06} smoothness={4}>
+          <meshStandardMaterial color="#2b2a28" roughness={0.55} />
+        </RoundedBox>
+        {/* Cornice in rilievo attorno allo schermo: quattro listelli, fuori dal rettangolo dello schermo. */}
+        {CORNICE_SCHERMO.map((c) => (
+          <mesh key={c.id} position={[SCHERMO.x + c.x, SCHERMO.y + c.y, FACCIA + 0.006]}>
+            <boxGeometry args={[c.w, c.h, 0.014]} />
+            <meshStandardMaterial color="#3b3a37" roughness={0.45} />
+          </mesh>
+        ))}
+        {/* Griglia dell'altoparlante, tra le manopole e il pulsante. */}
+        {GRIGLIA.map((y) => (
+          <mesh key={y} position={[MANOPOLE.x, y, FACCIA + 0.002]}>
+            <boxGeometry args={[0.14, 0.009, 0.006]} />
+            <meshStandardMaterial color="#141413" roughness={0.7} />
+          </mesh>
+        ))}
+        {/* Piedini. */}
+        {PIEDINI.map(([x, z]) => (
+          <mesh key={`${x}:${z}`} position={[x, -CORPO.h / 2 - 0.012, z]}>
+            <cylinderGeometry args={[0.035, 0.03, 0.03, 16]} />
+            <meshStandardMaterial color="#161615" roughness={0.8} />
+          </mesh>
+        ))}
         <mesh ref={selettoreSchermo} position={[SCHERMO.x, SCHERMO.y, SCHERMO_Z + 0.0005]} {...gestoSchermo}>
           {/* A video il piano diventa nero: l'iframe lo copre, e sotto le lettere nere non spunta la neve. */}
           <planeGeometry args={[SCHERMO.w, SCHERMO.h]} />
           <meshBasicMaterial map={vista === 'spenta' ? texNera : texNeve} toneMapped={false} color={vista === 'video' ? '#000000' : '#ffffff'} />
         </mesh>
-        {stato === 'video' && <VideoNelloSchermo youtubeId={pulsos.youtubeId} />}
+        {stato === 'video' && !eMobile() && <VideoNelloSchermo youtubeId={pulsos.youtubeId} titolo={pulsos.titolo} />}
         {MANOPOLE.y.map((y) => (
           <mesh key={y} position={[MANOPOLE.x, y, FACCIA + 0.02]} rotation={[Math.PI / 2, 0, 0]}>
             <cylinderGeometry args={[MANOPOLE.r, MANOPOLE.r, 0.04, 20]} />

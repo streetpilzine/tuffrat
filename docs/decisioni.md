@@ -82,3 +82,27 @@ Retro della bio: `CanvasTexture` con la bio breve (la completa non starebbe legg
 Video nella TV: drei `Html transform` montato in `#stage-html`, un contenitore fratello dello Stage (che è `aria-hidden`) con il suo contesto di impilamento sotto Nav, Hud e scheda; niente `occlude`. L'iframe esiste solo nello stato `video` e alla chiusura il player viene distrutto. Costo: il chunk three passa da 248 a 314 kB gzip.
 
 Stato della verifica: nessuna prova in Chrome riuscita il 16/11 (vedi `docs/qa/fase-3.md`); push del branch `redesign` chiesto da Gabriele per provare sulla preview Netlify.
+
+## 2026-11-17 — Correzioni mobile della fase 3
+
+Riscontri di Gabriele dalla prova sul telefono (dodici punti). Le correzioni valgono solo sul telefono, salvo i bug che erano comuni.
+
+Una sola definizione di «mobile»: `src/core/mobile.ts` (`eMobile()`, `useMobile()`, `QUERY_MOBILE` = `(max-width: 800px), (pointer: coarse) and (max-height: 600px)`), e la stessa query nel CSS. Su desktop e fuori dal browser (test, prerender) vale `false`, quindi le inquadrature e i test del desktop non cambiano.
+
+Serie sul telefono: i due polittici delle Bustine di tè stanno in colonna sopra Roundabout (`BUSTINE_MOBILE` in `layout-muro.ts`), non affiancati. Affiancate le due serie sono larghe quasi 4,5 unità: su uno schermo verticale la camera dovrebbe andare così lontano da renderle francobolli. In colonna `/serie` le mostra tutte, larghe quanto lo schermo. L'ordine dei pannelli sul telefono è quello dei dati: niente riordino.
+
+Camera sul telefono: pinch a due dita sul muro (le dita si contano in cattura sulla finestra, prima di R3F; il secondo dito annulla il gesto dell'oggetto con `presa.annulla`), limiti assoluti di distanza e quota, uscita dal fuoco senza tornare al centro del muro, Roundabout a tutto schermo con il tocco sulla parete che riporta a `/serie`, quadro a fuoco all'82 % dello schermo. Inquadrature dedicate per home, serie, Roundabout, Bustine e, col telefono in verticale, per il banco.
+
+Luce: sul telefono `LucePuntatore` usa l'inclinazione del dispositivo (`DeviceOrientationEvent`, conti in `src/core/inclinazione.ts`); il permesso iOS si chiede al primo tocco. Al rilascio del dito la luce torna alla sua posizione, non resta dove si è toccato.
+
+Scheda: sul telefono arriva a 80dvh; resta aperta se si naviga da un link al suo interno o con il tasto indietro (`navigazione.daScheda` e il tipo di navigazione del router passato a `useScene.vaiA`). Nella pagina dell'opera l'immagine si ingrandisce con due dita dentro il suo riquadro (`ImmagineZoom`). L'Hud sul telefono è diviso: il testo è un suggerimento in alto che se ne va da solo, i pulsanti restano sopra la maniglia. Voce «Studio» nella Nav.
+
+Sfogliatore: sul telefono non si usa `page-flip` ma `SfogliatoreMobile`, una pagina alla volta sempre in orizzontale (col telefono in verticale la scena è girata di 90° via CSS), con il foglio che segue il dito. `page-flip` legge `clientX` e i rettangoli a schermo e con il contenitore girato non funzionerebbe. Niente GSAP nel visore: vive anche in vista lista, dove il chunk di GSAP non è caricato.
+
+Rullino riscritto: la pellicola sta in un gruppo che a ogni frame prende la posa della camera, su un piano a distanza 1; bussolotto e striscia si posano da `posaRullino` in pixel del canvas vero, quindi restano dentro lo schermo con qualunque rapporto d'aspetto. La versione precedente aveva pose pensate per uno schermo largo, un taglio che non si attivava mai e sistemi di coordinate mescolati: la pellicola non si vedeva su nessuno schermo.
+
+Bug comuni a desktop e telefono, corretti alla radice: il retro del ritratto era vuoto (materiale nato senza `map`: ora ha una chiave per texture); il video della TV non partiva mai (il player lo creava un effetto che leggeva un `ref` dentro drei `Html`, sempre vuoto perché `Html` monta i figli in una sua radice React). Il video ora è un iframe semplice, senza l'API IFrame di YouTube: su desktop dentro lo schermo 3D (`Html transform`), sul telefono in un riquadro DOM sopra la scena (`TvVideo`), perché un iframe trasformato in 3D sui browser mobili è fragile.
+
+Modelli: Blender 5.2 headless (`tools/blender/`) per il banco in legno e il pennarello, caricati con `useGLTF` senza decoder Draco e Meshopt (`src/three/modelli/`). I modelli Blender di TV, bussolotto e bomboletta non sono riusciti (pezzi staccati) e non si usano: bomboletta tornita in codice (`LatheGeometry`), TV con scocca arrotondata, cornice, griglia e piedini. Restano da rifare in Blender.
+
+Verifica: `tools/qa/shot.mjs` (playwright-core con Edge di sistema, emulazione telefono con touch e pinch veri) raggiunge il dev server locale, a differenza del Chrome collegato. Resoconto in `docs/qa/fase-3-mobile.md`.

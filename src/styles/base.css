@@ -477,6 +477,13 @@ dialog.lightbox::backdrop { background: rgba(0,0,0,0.72); }
 .stage canvas { display: block; }
 /* Contenitore del DOM agganciato alla scena (iframe della TV): stessa scatola del canvas, non intercetta i gesti se non sui figli che lo chiedono. */
 .stage-html { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+/* Telefono: il video della TV in un riquadro sopra la scena (TvVideo), largo quanto lo schermo consente e alto al più lo spazio tra la barra e i pulsanti. Solo il riquadro prende i tocchi: attorno arrivano alla scena. */
+.tv-video { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; pointer-events: none; }
+.tv-video__riquadro {
+  width: min(calc(100vw - 16px), calc((100dvh - 264px) * 16 / 9)); aspect-ratio: 16 / 9;
+  background: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32); pointer-events: auto;
+}
+.tv-video__riquadro iframe { display: block; width: 100%; height: 100%; border: 0; }
 
 /* Nav: in vista lista resta nel flusso; in 3D è una barra flottante sopra la scena (tuffrat-visual B7). */
 .nav__vista {
@@ -555,6 +562,66 @@ html[data-vista="3d"], html[data-vista="3d"] body { height: 100%; overflow: hidd
   .app--3d .nav__vista { padding: 4px 12px; }
   .app--3d .sheet { width: calc(100% - 16px); }
   .hud { border-radius: 16px; padding: 8px 12px; gap: 8px; }
+}
+
+/* ══ Correzioni telefono (stessa definizione di src/core/mobile.ts) ══ */
+@media (max-width: 800px), (pointer: coarse) and (max-height: 600px) {
+  /* Nav a sei voci: nello schermo da 390 px ci stanno tutte, con spazi da Spacing-75 (tuffrat-visual B2). Il pinch sulla barra non zooma la pagina. */
+  .app--3d .nav { touch-action: pan-x pan-y; }
+  .app--3d .nav__links { gap: 4px 8px; justify-content: space-between; }
+  .app--3d .nav__links a { font-size: 0.8125rem; line-height: 1rem; padding: 4px 0; }
+
+  /* Scheda aperta: quattro quinti dello schermo, così l'opera si vede intera. La Nav resta sopra. */
+  .app--3d .sheet.is-aperta { max-height: 80dvh; }
+  .app--3d .sheet { touch-action: pan-y; transition-property: transform, max-height; }
+
+  /* Hud: sul telefono i due pezzi stanno ognuno per conto suo. Il testo è un suggerimento in alto, sotto la Nav, che se ne va da solo (classe `is-via`, la mette il componente) e non intercetta mai i tocchi; i pulsanti, quando ci sono, restano in una riga compatta sopra la maniglia. Così banco, fanzine e rullini si vedono e si toccano. */
+  .app--3d .hud { display: contents; }
+  .app--3d .hud__testo {
+    position: fixed; z-index: 2; top: 104px; left: 8px; right: 8px; padding: 8px 12px; border-radius: 12px;
+    border: 1px solid var(--border); background: rgba(247, 247, 245, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    pointer-events: none; transition: opacity 300ms var(--ease);
+  }
+  .app--3d .hud__testo.is-via, .app--3d .hud.is-nascosto .hud__testo { opacity: 0; }
+  .app--3d .hud__azioni {
+    position: fixed; z-index: 2; left: 8px; right: 8px; bottom: 64px; justify-content: center; flex-wrap: wrap; gap: 4px;
+    pointer-events: none; transition: opacity 300ms var(--ease);
+  }
+  .app--3d .hud__azioni > * { pointer-events: auto; touch-action: manipulation; }
+  .app--3d .hud.is-nascosto .hud__azioni { opacity: 0; }
+  .app--3d .hud.is-nascosto .hud__azioni > * { pointer-events: none; }
+
+  /* Telefono in orizzontale: la Nav sta su una riga sola (marchio, voci, interruttore), il suggerimento le sta sotto. */
+  @media (min-width: 641px) {
+    .app--3d .nav { border-radius: 999px; padding: 8px 16px; gap: 4px 16px; top: 8px; }
+    .app--3d .nav__links { order: 0; width: auto; gap: 4px 12px; }
+    .app--3d .nav__links a { font-size: 0.875rem; line-height: 1.25rem; padding: 0; }
+    .app--3d .nav__vista { padding: 4px 12px; }
+    .app--3d .sheet { width: calc(100% - 16px); }
+    .app--3d .hud__testo { top: 64px; }
+    .app--3d .opera--mobile .zoom { max-height: calc(80dvh - 56px); }
+  }
+
+  /* Opere: l'immagine dentro il suo riquadro, per intera. */
+  .opera--mobile { grid-template-columns: 1fr; gap: 24px; margin-top: 16px; }
+  /* L'opera in primo piano si vede tutta: l'immagine sta tra la Nav e la maniglia, l'altezza la decide lo spazio, la larghezza ne segue. */
+  .app--3d .opera--mobile .zoom { width: auto; max-width: 100%; max-height: calc(72dvh - 56px); margin: 0 auto; }
+  .opera--mobile .opera__dettagli { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+
+  /* L'immagine che si ingrandisce da sola (`ImmagineZoom`) ha lo stile fuori da questo blocco: vale anche in vista lista. */
+}
+
+
+/* ImmagineZoom fuori dal telefono: come nel riquadro, .zoom del telefono vince dopo. */
+.zoom { position: relative; overflow: hidden; border-radius: var(--radius); }
+.zoom img { width: 100%; height: 100%; object-fit: contain; transform-origin: 50% 50%; transition: transform 500ms var(--ease); }
+.zoom img.is-secco { transition: none; }
+
+/* Telefono: il riquadro fitta a un dito (pan-y) e si ferma con la scheda quando lo si tocca o sotto il pinch. */
+@media (max-width: 800px), (pointer: coarse) and (max-height: 600px) {
+  .zoom { background: #fff; box-shadow: var(--shadow); touch-action: pan-y; }
+  .zoom.is-blocco { touch-action: none; }
+  .zoom img { will-change: transform; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 }
 
 /* Cursore contestuale: solo con puntatore fine, solo in 3D. L'icona è bianca in blend difference, così si vede su chiaro e su scuro. */

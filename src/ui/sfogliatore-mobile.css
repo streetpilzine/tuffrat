@@ -1,0 +1,112 @@
+/* Visore mobile delle fanzine (SfogliatoreMobile): una pagina per volta, sempre in orizzontale.
+   Il componente si monta solo su mobile (useMobile), quindi queste regole non toccano lo sfogliatore del desktop. */
+
+@keyframes sfoglia-entra {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.flipbook-overlay.sfoglia-overlay { display: block; }
+
+/* Fondo pieno a tutto schermo: riceve il dito (nessun gesto del browser: né scorrimento né zoom). */
+.sfoglia {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #0b0b0b;
+  color: #f7f7f5;
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: sfoglia-entra 400ms var(--ease) both;
+}
+
+/* La scena è sempre orizzontale (lato lungo × lato corto, misure scritte dal componente). Col telefono in verticale
+   il componente la gira di 90° attorno all'angolo in alto a sinistra: l'inizio della scena (la colonna) è la cima
+   dello schermo, la fine è il fondo; le aree sicure seguono lo stesso giro. */
+.sfoglia__scena {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  transform-origin: 0 0;
+  display: flex;
+  --sicura-inizio: env(safe-area-inset-left, 0px);
+  padding: 0 env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) 0;
+}
+.sfoglia__scena.is-ruotata {
+  --sicura-inizio: env(safe-area-inset-top, 0px);
+  padding: 0 env(safe-area-inset-bottom, 0px) 0 0;
+}
+
+/* Colonna stretta a sinistra della pagina: chiusura, titolo, contatore e descrizione della pagina. */
+.sfoglia__colonna {
+  flex: none;
+  box-sizing: border-box;
+  width: calc(112px + var(--sicura-inizio));
+  min-height: 0;
+  padding: 12px 8px 12px calc(12px + var(--sicura-inizio));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.sfoglia__chiudi {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: 0 0 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(247, 247, 245, 0.14);
+  color: #f7f7f5;
+  font: 400 24px/1 Manrope, sans-serif;
+  cursor: pointer;
+  transition: background-color 300ms var(--ease), transform 300ms var(--ease);
+}
+.sfoglia__chiudi:active { background: rgba(247, 247, 245, 0.3); transform: scale(0.96); }
+.sfoglia__chiudi:focus-visible { outline: 2px solid #f7f7f5; outline-offset: 3px; }
+.sfoglia__titolo { margin: 0; font: 600 14px/20px Manrope, sans-serif; text-wrap: balance; overflow-wrap: anywhere; }
+.sfoglia__contatore { margin: 0; font: 500 12px/16px Manrope, sans-serif; color: rgba(247, 247, 245, 0.85); font-variant-numeric: tabular-nums; }
+.sfoglia__descrizione {
+  margin: 0;
+  min-height: 0;
+  overflow: hidden;
+  font: 400 12px/16px Manrope, sans-serif;
+  color: rgba(247, 247, 245, 0.7);
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+/* Lo spazio della pagina: tutto ciò che resta a destra della colonna, con il libro al centro. */
+.sfoglia__area { position: relative; flex: 1; min-width: 0; min-height: 0; display: grid; place-items: center; }
+.sfoglia__libro { position: relative; }
+
+/* Tre fogli sovrapposti: la successiva sotto, la corrente in mezzo, la precedente sopra (di taglio e nascosta a
+   riposo). Ruotano attorno al bordo sinistro, la rilegatura; angolo, visibilità e velo li scrive il componente. */
+.sfoglia__pagina {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #ecebe5;
+  border-radius: 2px;
+  transform-origin: 0 50%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+}
+.sfoglia__pagina--successiva { z-index: 1; visibility: hidden; }
+.sfoglia__pagina--corrente { z-index: 2; }
+.sfoglia__pagina--precedente { z-index: 3; visibility: hidden; }
+.sfoglia__pagina img { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+/* Ombra del foglio: scurisce la pagina che si alza e quella che resta sotto. */
+.sfoglia__velo { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sfoglia { animation: none; }
+  .sfoglia__chiudi { transition: none; }
+}

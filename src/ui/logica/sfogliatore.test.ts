@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { AREA_SFOGLIATORE, descriviPagine, misureSfogliatore } from './sfogliatore'
+import { angoloFoglio, AREA_SFOGLIATORE, avanzamento, descriviPagine, misureSfogliatore, MOBILE, paginaMobile, rilascio, scenaMobile, versoScena } from './sfogliatore'
 import { didascaliaEdizione } from './didascaliaEdizione'
 
 const area = AREA_SFOGLIATORE
@@ -55,5 +55,70 @@ describe('didascaliaEdizione', () => {
   })
   it('edizione senza numero', () => {
     expect(didascaliaEdizione({ titolo: 'Rivista di prova' })).toBe('Rivista di prova · Fanzine')
+  })
+})
+
+describe('visore mobile', () => {
+  it('la scena è sempre orizzontale e si gira solo col telefono in verticale', () => {
+    expect(scenaMobile({ larghezza: 390, altezza: 844 })).toEqual({ ruotata: true, lungo: 844, corto: 390 })
+    expect(scenaMobile({ larghezza: 844, altezza: 390 })).toEqual({ ruotata: false, lungo: 844, corto: 390 })
+  })
+
+  it('con la scena girata l’asse della pagina è quello verticale dello schermo', () => {
+    const scena = { ruotata: true, corto: 390 }
+    // L'angolo in alto a sinistra della scena si vede in alto a destra dello schermo.
+    expect(versoScena({ x: 390, y: 0 }, scena)).toEqual({ x: 0, y: 0 })
+    // Scendere lungo lo schermo è andare a destra nella pagina; andare a sinistra sullo schermo è scendere nella pagina.
+    expect(versoScena({ x: 390, y: 500 }, scena)).toEqual({ x: 500, y: 0 })
+    expect(versoScena({ x: 90, y: 500 }, scena)).toEqual({ x: 500, y: 300 })
+    expect(versoScena({ x: 10, y: 20 }, { ruotata: false, corto: 390 })).toEqual({ x: 10, y: 20 })
+  })
+
+  it('la pagina 3:2 prende tutta l’altezza dello schermo tenuto in orizzontale', () => {
+    expect(paginaMobile(1.5, { larghezza: 740, altezza: 390 })).toEqual({ larghezza: 561, altezza: 374 })
+    // Se lo spazio è stretto vincola la larghezza, sempre in proporzione.
+    expect(paginaMobile(1.5, { larghezza: 316, altezza: 390 })).toEqual({ larghezza: 300, altezza: 200 })
+  })
+
+  it('il dito verso la rilegatura sfoglia in avanti, verso il bordo libero all’indietro', () => {
+    expect(avanzamento(-280, 560, 2, 8)).toBeCloseTo(0.5)
+    expect(avanzamento(280, 560, 2, 8)).toBeCloseTo(-0.5)
+    expect(avanzamento(-2000, 560, 2, 8)).toBe(1)
+  })
+
+  it('ai capi del libro il foglio cede appena e resiste', () => {
+    const ultima = avanzamento(-560, 560, 7, 8)
+    expect(ultima).toBeGreaterThan(0)
+    expect(ultima).toBeLessThanOrEqual(MOBILE.resistenza)
+    const prima = avanzamento(560, 560, 0, 8)
+    expect(prima).toBeLessThan(0)
+    expect(prima).toBeGreaterThanOrEqual(-MOBILE.resistenza)
+  })
+
+  it('il bordo libero del foglio resta sotto il dito', () => {
+    expect(angoloFoglio(0)).toBe(0)
+    expect(angoloFoglio(1)).toBeCloseTo(90)
+    expect(angoloFoglio(2)).toBeCloseTo(90)
+    // A ogni punto dello sfoglio la larghezza del foglio visto di fronte è la parte di pagina non ancora percorsa.
+    for (const p of [0.1, 0.25, 0.5, 0.75, 0.9]) {
+      expect(Math.cos((angoloFoglio(p) * Math.PI) / 180)).toBeCloseTo(1 - p)
+    }
+    // Continuo e crescente: nessuno scatto all'inizio del gesto.
+    expect(angoloFoglio(0.001)).toBeLessThan(3)
+    expect(angoloFoglio(0.3)).toBeGreaterThan(angoloFoglio(0.2))
+  })
+
+  it('il rilascio completa oltre la soglia o con un colpo veloce, e torna a posto altrimenti', () => {
+    expect(rilascio(0.5, 0, 2, 8)).toBe(1)
+    expect(rilascio(-0.5, 0, 2, 8)).toBe(-1)
+    expect(rilascio(0.1, 0, 2, 8)).toBe(0)
+    // Colpo veloce verso la rilegatura: avanti anche se corto.
+    expect(rilascio(0.1, -0.8, 2, 8)).toBe(1)
+    expect(rilascio(-0.1, 0.8, 2, 8)).toBe(-1)
+    // Colpo veloce nel verso opposto: annulla anche oltre la soglia.
+    expect(rilascio(0.6, 0.8, 2, 8)).toBe(0)
+    // Ai capi non si completa mai.
+    expect(rilascio(0.09, -2, 7, 8)).toBe(0)
+    expect(rilascio(-0.09, 2, 0, 8)).toBe(0)
   })
 })

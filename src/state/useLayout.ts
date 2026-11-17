@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { opereInHome, polittici, type Opera } from '../data/index.ts'
-import { disponiPolittico, disponiSulMuro, type Posto } from '../three/layout-muro.ts'
+import { disponiPolittico, disponiSulMuro, zonaBustine, type Posto } from '../three/layout-muro.ts'
 
 const CHIAVE = 'tuffrat.layout.v1'
 
@@ -78,7 +78,9 @@ export function poseHome(posizioni: Record<string, Punto>): Posa[] {
 
 /** Pannelli dei polittici con la posizione che deriva dall'ordine corrente. */
 export function posePolittici(ordini: Record<string, string[]>): Posto[] {
-  return polittici.flatMap((p, riga) => disponiPolittico(p, ordini[p.id] ?? p.ordineDefault, riga))
+  // Sul telefono i polittici stanno in colonna sopra Roundabout: la stessa zona vale per i quadri, per i target e per il fuoco dei pannelli.
+  const zona = zonaBustine()
+  return polittici.flatMap((p, riga) => disponiPolittico(p, ordini[p.id] ?? p.ordineDefault, riga, zona))
 }
 
 /** Posa corrente di un'opera appesa (home o polittico), o `null` se l'opera non è una cornice sul muro. */

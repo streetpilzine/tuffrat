@@ -4,11 +4,13 @@ import { artista } from '../data'
 import { usePageMeta } from '../lib/usePageMeta'
 import { metaFor } from '../routes.meta'
 import { SceneRouter } from '../core/SceneRouter'
+import { eMobile } from '../core/mobile'
 import { scenaPerRoute } from '../core/scene-map'
 import { modo3D, osservaReducedMotion, usePrefs } from '../state/usePrefs'
-import { useScene } from '../state/useScene'
+import { navigazione, useScene } from '../state/useScene'
 import { Hud } from './Hud'
 import { Nav } from './Nav'
+import { TvVideo } from './TvVideo'
 
 /** I chunk three/R3F e gsap si caricano solo quando si entra in modo 3D. */
 const Stage = lazy(() => import('../core/Stage'))
@@ -38,10 +40,10 @@ function ScrollToTop({ corpo }: { corpo: React.RefObject<HTMLDivElement | null> 
     if (hash) {
       // La scheda la apre il SceneRouter; qui si aspetta un frame perché il bersaglio non sia più `inert`.
       requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView())
-    } else {
-      window.scrollTo(0, 0)
-      corpo.current?.scrollTo(0, 0)
+      return
     }
+    window.scrollTo(0, 0)
+    corpo.current?.scrollTo(0, 0)
   }, [pathname, hash, corpo])
   return null
 }
@@ -90,6 +92,15 @@ export function Layout() {
   const { pathname } = useLocation()
   const titoloScheda = pathname === '/' ? 'Studio' : metaFor(pathname).title.replace(/ — TuffRat$/, '')
   const chiusa = in3D && !schedaAperta
+  // Telefono: un link toccato dentro la scheda aperta porta alla pagina nuova senza chiuderla (lo consuma `useScene.vaiA`). In cattura: prima che il router navighi.
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (!eMobile() || !(e.target instanceof Element)) return
+      if (e.target.closest('a[href]')?.closest('.sheet__corpo')) navigazione.daScheda = performance.now()
+    }
+    document.addEventListener('click', onClick, true)
+    return () => document.removeEventListener('click', onClick, true)
+  }, [])
 
   return (
     <div className={`app ${in3D ? 'app--3d' : 'app--lista'}`}>
@@ -105,6 +116,7 @@ export function Layout() {
       )}
       {/* DOM agganciato alla scena (l'iframe del video nella TV): fratello dello Stage, che è `aria-hidden`, con il suo contesto di impilamento sotto Nav, Hud e scheda. */}
       {in3D && <div className="stage-html" id="stage-html" />}
+      {in3D && <TvVideo />}
       <Nav />
       {in3D && <Hud />}
       {/* In 3D la scheda è un cassetto fisso in basso: chiusa lascia libero il palco, aperta scorre al suo interno. */}

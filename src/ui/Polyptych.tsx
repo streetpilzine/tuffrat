@@ -1,12 +1,13 @@
 import { useLayoutEffect, useRef, type KeyboardEvent, type PointerEvent } from 'react'
 import { Link } from 'react-router'
+import { useMobile } from '../core/mobile'
 import type { Polittico } from '../data'
 import { misureLabel } from '../lib/format'
 import { usePrefs } from '../state/usePrefs'
 
 interface Props {
   polittico: Polittico
-  /** Id dei pannelli nell'ordine corrente, da sinistra a destra. */
+  /** Id dei pannelli nell'ordine corrente, da sinistra a destra (su telefono ignorato: vale `ordineDefault`). */
   ordine: string[]
   onReorder: (ordine: string[]) => void
 }
@@ -34,14 +35,18 @@ function caricaMotore(): Promise<Motore> {
  * Polittico piatto (ARCHITECTURE §7): pannelli complanari affiancati, nelle proporzioni reali.
  * L'ordine si cambia trascinando un pannello (mouse o touch), con le frecce ← → sul pannello a fuoco,
  * o con i due pulsanti sotto ogni pannello. Lo spostamento è animato con GSAP Flip, salvo reduced motion.
+ * Su telefono l'ordine dei polittici del tè è quello definito dall'artista: i pannelli restano fermi
+ * nell'ordine predefinito, senza trascinamento, frecce né pulsanti.
  */
 export function Polyptych({ polittico, ordine, onReorder }: Props) {
   const lista = useRef<HTMLOListElement>(null)
   const reducedMotion = usePrefs((s) => s.reducedMotion)
+  const mobile = useMobile()
   const inAttesa = useRef<{ stato: FlipState; m: Motore } | null>(null)
   const trascina = useRef<{ id: string; x: number; el: HTMLElement; mosso: boolean } | null>(null)
   const fuocoDopo = useRef<string | null>(null)
-  const pannelli = ordine.map((id) => polittico.pannelli.find((p) => p.id === id)).filter((p) => !!p)
+  const ordineMostrato = mobile ? polittico.ordineDefault : ordine
+  const pannelli = ordineMostrato.map((id) => polittico.pannelli.find((p) => p.id === id)).filter((p) => !!p)
 
   const riordina = async (nuovo: string[]) => {
     if (nuovo.join() === ordine.join()) return
@@ -64,10 +69,10 @@ export function Polyptych({ polittico, ordine, onReorder }: Props) {
   }, [ordine])
 
   const sposta = (id: string, passo: -1 | 1) => {
-    const i = ordine.indexOf(id)
+    const i = ordineMostrato.indexOf(id)
     const j = i + passo
-    if (j < 0 || j >= ordine.length) return
-    const nuovo = [...ordine]
+    if (j < 0 || j >= ordineMostrato.length) return
+    const nuovo = [...ordineMostrato]
     ;[nuovo[i], nuovo[j]] = [nuovo[j], nuovo[i]]
     fuocoDopo.current = id
     void riordina(nuovo)
@@ -108,12 +113,12 @@ export function Polyptych({ polittico, ordine, onReorder }: Props) {
     const mio = centro(t.el)
     const altri = [...lista.current.querySelectorAll<HTMLElement>('[data-pannello]')].filter((el) => el !== t.el)
     const indice = altri.filter((el) => centro(el) < mio).length
-    const nuovo = ordine.filter((id) => id !== t.id)
+    const nuovo = ordineMostrato.filter((id) => id !== t.id)
     nuovo.splice(indice, 0, t.id)
     const pulisci = () => {
       t.el.style.transform = ''
     }
-    if (nuovo.join() === ordine.join()) return pulisci()
+    if (nuovo.join() === ordineMostrato.join()) return pulisci()
     // Lo stato Flip si cattura con il pannello ancora dov'è stato rilasciato, poi si toglie il transform.
     void (async () => {
       if (!reducedMotion) {
@@ -129,32 +134,40 @@ export function Polyptych({ polittico, ordine, onReorder }: Props) {
     <ol className="polittico__pannelli" ref={lista} aria-label={`Pannelli di ${polittico.titolo}, in ordine da sinistra a destra`}>
       {pannelli.map((p, i) => (
         <li key={p.id} style={{ flex: `${p.misure.w} 1 0` }}>
-          <div
-            className="polittico__pannello"
-            data-pannello={p.id}
-            data-cursor="grab"
-            tabIndex={0}
-            role="group"
-            aria-label={`${p.titolo}, posizione ${i + 1} di ${pannelli.length}. Frecce sinistra e destra per spostarlo.`}
-            onKeyDown={(e) => onKey(e, p.id)}
-            onPointerDown={(e) => onDown(e, p.id)}
-            onPointerMove={onMove}
-            onPointerUp={onUp}
-            onPointerCancel={onUp}
-          >
-            <img src={p.immagine.src} alt={p.immagine.alt} width={p.immagine.width} height={p.immagine.height} loading="lazy" draggable={false} />
-          </div>
+          {mobile ? (
+            <div className="polittico__pannello polittico__pannello--fermo" data-pannello={p.id}>
+              <img src={p.immagine.src} alt={p.immagine.alt} width={p.immagine.width} height={p.immagine.height} loading="lazy" draggable={false} />
+            </div>
+          ) : (
+            <div
+              className="polittico__pannello"
+              data-pannello={p.id}
+              data-cursor="grab"
+              tabIndex={0}
+              role="group"
+              aria-label={`${p.titolo}, posizione ${i + 1} di ${pannelli.length}. Frecce sinistra e destra per spostarlo.`}
+              onKeyDown={(e) => onKey(e, p.id)}
+              onPointerDown={(e) => onDown(e, p.id)}
+              onPointerMove={onMove}
+              onPointerUp={onUp}
+              onPointerCancel={onUp}
+            >
+              <img src={p.immagine.src} alt={p.immagine.alt} width={p.immagine.width} height={p.immagine.height} loading="lazy" draggable={false} />
+            </div>
+          )}
           <p className="polittico__didascalia">
             <Link to={`/opere/${p.id}`}>{p.titolo}</Link> · {misureLabel(p.misure)}
           </p>
-          <div className="polittico__sposta">
-            <button type="button" className="link" disabled={i === 0} aria-label={`Sposta ${p.titolo} a sinistra`} onClick={() => sposta(p.id, -1)}>
-              ←
-            </button>
-            <button type="button" className="link" disabled={i === pannelli.length - 1} aria-label={`Sposta ${p.titolo} a destra`} onClick={() => sposta(p.id, 1)}>
-              →
-            </button>
-          </div>
+          {!mobile && (
+            <div className="polittico__sposta">
+              <button type="button" className="link" disabled={i === 0} aria-label={`Sposta ${p.titolo} a sinistra`} onClick={() => sposta(p.id, -1)}>
+                ←
+              </button>
+              <button type="button" className="link" disabled={i === pannelli.length - 1} aria-label={`Sposta ${p.titolo} a destra`} onClick={() => sposta(p.id, 1)}>
+                →
+              </button>
+            </div>
+          )}
         </li>
       ))}
     </ol>
